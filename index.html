@@ -42,7 +42,7 @@ header h1{font-size:30px;font-weight:600;margin-right:auto}
 .feature small{display:block;font:600 16px Poppins,sans-serif;color:#fff;text-shadow:none;margin-top:10px}
 .list{padding:0 20px}
 .li{display:flex;align-items:center;gap:20px;padding:14px 0;width:100%}
-.li .lg,.channel-card .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;overflow:hidden;position:relative}.lg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}.channel-list{padding:0 20px;display:grid;gap:14px}.channel-card{width:100%;min-height:170px;border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative;background:#262632;display:flex;align-items:flex-end}.channel-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.channel-card::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,.92))}.channel-info{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:14px;width:100%}.channel-info strong{display:block}.channel-info small{display:block;color:#eee}.player-note{color:#ddd;padding:10px 16px;font-size:13px}.player-note:empty{display:none}
+.li .lg,.channel-card .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;overflow:hidden;position:relative}.lg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}.channel-list{padding:0 20px;display:grid;gap:14px}.channel-card{width:100%;min-height:170px;border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative;background:#262632;display:flex;align-items:flex-end}.channel-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.channel-card::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,.92))}.channel-info{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:14px;width:100%}.channel-info strong{display:block}.channel-info small{display:block;color:#eee}.player-note{color:#ddd;padding:10px 16px;font-size:13px}.player-note:empty{display:none}.video-fallback{color:#ddd;padding:10px 16px 14px;font-size:13px}.video-fallback a{color:var(--y);font-weight:600;text-decoration:underline}
 .li span.n{flex:1}
 .li small{display:block;color:var(--mute);font-size:13px}
 .li svg{color:var(--mute)}
@@ -94,7 +94,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
   <div id="dock"><div><strong id="dt"></strong><small id="ds"></small></div><audio id="au" controls></audio></div>
   <nav aria-label="Main"></nav>
 </div>
-<dialog id="dlg"><button class="close" id="x" aria-label="Close video">✕</button><div class="frame" id="frame"></div><div class="player-note" id="playerNote"></div></dialog>
+<dialog id="dlg"><button class="close" id="x" aria-label="Close video">✕</button><div class="frame" id="frame"></div><div class="player-note" id="playerNote"></div><div class="video-fallback">Video not playing? <a id="youtubeLink" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></div></dialog>
 <div id="toast" role="status"></div>
 
 <script>
@@ -105,6 +105,11 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 · Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 · food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale · travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006"},{"title":"T Paul & Ray G in Mbarara","tag":"Kakyeka concert · recorded performance","cta":"Watch the show","hue":200,"youtube":"_VZ3YlJAxCg"}];
 const CATS=["Drama","Movies","Comedy","Music","Talk & Culture","Reality Shows","Concerts"];
 const CONTENT=[
+ {"cat":"Music","title":"Mubuya","sub":"Fik Tauch ft. Be6tin \u00b7 20 Nov 2026 \u00b7 official video","hue":205,"youtube":"pYJUdhtc3-U"},
+ {"cat":"Music","title":"Another Love","sub":"Be6tin \u00b7 rehearsal performance \u00b7 8 Nov 2026","hue":190,"youtube":"KG_MFHU74qs"},
+ {"cat":"Music","title":"Mayina","sub":"Be6tin \u00b7 rehearsal performance \u00b7 8 Nov 2026","hue":210,"youtube":"Lp38YhAKYAs"},
+ {"cat":"Music","title":"Hapiness","sub":"Be6tin \u00b7 rehearsal performance \u00b7 8 Nov 2026","hue":225,"youtube":"Rdv9C1L8XVs"},
+ {"cat":"Music","title":"Ebikanyilumira","sub":"Be6tin & Peak Band \u00b7 rehearsal performance \u00b7 7 Nov 2026","hue":240,"youtube":"WKzP8BNH7zs"},
  {"cat":"Music","title":"Hurira Ebi Mukama (Hymn 246)","sub":"Sister Charity \u00b7 20 Nov 2026 \u00b7 hymn rendition","hue":175,"youtube":"FpZfKK49nLw"},
  {"cat":"Music","title":"Equalizer","sub":"Goodhope Alex & Feffe Bussi \u00b7 19 Nov 2026","hue":215,"youtube":"-Nr4aGResdA"},
  {"cat":"Music","title":"Omunywani","sub":"Tip Tony \u00b7 6 Nov 2026","hue":280,"youtube":"OMi6jrxdJp0"},
@@ -241,8 +246,9 @@ function play(k){
   if(c.url){window.open(c.url,"_blank","noopener,noreferrer");return;}
   if(c.youtube){
     $("#au").pause();$("#dock").classList.remove("on");
-    $("#frame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${c.youtube}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="${c.title||c.name||c.caption}"></iframe>`;
+    $("#frame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${c.youtube}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="${c.title||c.name||c.caption}"></iframe>`;
     $("#playerNote").textContent=c.note||"";
+    $("#youtubeLink").href="https://www.youtube.com/watch?v="+encodeURIComponent(c.youtube);
     $("#dlg").showModal();
   }else if(c.audio){
     $("#au").src=c.audio;$("#au").play().catch(()=>{});
