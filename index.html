@@ -28,7 +28,7 @@ header h1{font-size:30px;font-weight:600;margin-right:auto}
 .banners{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px;scrollbar-width:none}
 .banners::-webkit-scrollbar,.row::-webkit-scrollbar,.pills::-webkit-scrollbar{display:none}
 .bn{flex:0 0 92%;scroll-snap-align:center;aspect-ratio:16/9;border-radius:18px;padding:18px;display:flex;flex-direction:column;justify-content:center;gap:10px;border:1px solid var(--line)}
-.bn h2{font-size:clamp(20px,5vw,30px);font-weight:700;line-height:1.15;max-width:15ch;color:var(--y)}
+.banner-credit{color:#eee;font-size:10px;text-shadow:0 1px 3px #000}.bn h2{font-size:clamp(20px,5vw,30px);font-weight:700;line-height:1.15;max-width:15ch;color:var(--y)}
 .tag{align-self:flex-start;background:var(--y);color:#111;font-weight:700;border-radius:99px;padding:3px 14px;font-size:14px}
 .cta{align-self:flex-start;border:1px solid #fff;border-radius:99px;padding:3px 14px;font-size:14px;font-weight:600}
 .pills,.row{display:flex;gap:12px;overflow-x:auto;padding:0 20px;scrollbar-width:none}
@@ -102,7 +102,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
    youtube: ID after v= in a YouTube link (video, live stream or short)
    audio:   link to an .mp3 file (for music and podcasts)
    Leave both "" until you have the link.  hue = poster colour 0-360 */
-const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 · Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 · food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale · travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006"},{"title":"T Paul & Ray G in Mbarara","tag":"Kakyeka concert · recorded performance","cta":"Watch the show","hue":200,"youtube":"_VZ3YlJAxCg"}];
+const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 \u00b7 Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/","image":"https://prowesscomms.com/wp/wp-content/uploads/2026/07/4.jpg","credit":"Previous edition \u00b7 photo: Prowess Communications"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 \u00b7 food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/","image":"https://www.showbizuganda.com/wp-content/uploads/2026/11/kisoro.png","credit":"Event poster \u00b7 Showbiz Uganda"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale \u00b7 travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006","image":"https://upload.wikimedia.org/wikipedia/commons/d/d4/Crater_lakes_in_Fort_Portal.jpg","credit":"Ozelleronny / Wikimedia Commons \u00b7 CC BY-SA 4.0"},{"title":"T Paul & Ray G in Mbarara","tag":"Kakyeka concert \u00b7 recorded performance","cta":"Watch the show","hue":200,"youtube":"_VZ3YlJAxCg","image":"https://i.ytimg.com/vi/_VZ3YlJAxCg/hqdefault.jpg","credit":"Video thumbnail"}];
 const CATS=["Drama","Movies","Comedy","Music","Talk & Culture","Reality Shows","Concerts"];
 const CONTENT=[
  {"cat":"Music","title":"Mubuya","sub":"Fik Tauch ft. Be6tin \u00b7 20 Nov 2026 \u00b7 official video","hue":205,"youtube":"pYJUdhtc3-U"},
@@ -143,8 +143,6 @@ const CONTENT=[
  {cat:"Drama",title:"Evening Neighbours",sub:"Season 2",hue:340,youtube:""},
  {cat:"Drama",title:"The Village Elder",sub:"Season 3",hue:160,youtube:""},
  {cat:"Drama",title:"Love on Campus",sub:"Season 1",hue:15,youtube:""},
- {cat:"Movies",title:"Homecoming",sub:"Feature film",hue:210,youtube:""},
- {cat:"Movies",title:"The Last Boda",sub:"Feature film",hue:40,youtube:""},
  {cat:"Movies",title:"Embitha",sub:"Alfred Bwambale · Lukonzo film",hue:200,youtube:"9_qHaTHU03o"},
  {cat:"Movies",title:"The Mbolechi",sub:"Alfred Bwambale · Luganda translation",hue:160,youtube:"M5ayXLMEgjg"},
  {cat:"Movies",title:"Peerless Pearl",sub:"Full episode · Block Film Production",hue:280,youtube:"bMckdcdZSzI"},
@@ -155,25 +153,10 @@ const CONTENT=[
  {cat:"Concerts",title:"Rhythm of the City",sub:"Live recording",hue:130,youtube:"",audio:""},
  {cat:"Concerts",title:"Sunrise Festival",sub:"Live recording",hue:45,youtube:""}, {cat:"Concerts",title:"Kyakere Carnival 2026",sub:"Live recording · 18 October 2026",hue:210,youtube:"5LrxzVuU6Qo"}
 ];
-const CHANNELS=[
- {name:"TV West",color:"#e53935",youtube:"iKM-Mge6-30",note:"Recorded broadcast",logo:"https://yt3.googleusercontent.com/ytc/AIdro_lJbo_CiFIe83QxKYzhzZseVpVFej006pCBy0ba6PaLCyw=s900-c-k-c0x00ffffff-no-rj",cover:"https://yt3.googleusercontent.com/jFs7GkP7GYj6ym4M9tmSVhiXAjzz2cb1L9lgyttFwtHhUKkBt9_EORKqdyuI0iLlJBMTeC9R=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"},
- {name:"Rwenzori TV",color:"#e53935",youtube:"_JisVK9_o2E",note:"Recorded broadcast · July 2023",liveUrl:"https://rwenzoritv.com/live/",logo:"https://yt3.googleusercontent.com/E7XrrIyH02rIDQcTRWMvOYG1NbDnBG2VBXBvGgFuCsQgQYfaViRhKSVdAC2ymbnWol4N1V-DZA=s900-c-k-c0x00ffffff-no-rj",cover:"https://yt3.googleusercontent.com/fQX6oC1hARg6VJb4sJVR8VWtySOEu1i7G8V3qiN4ubf_d3HCmRBEML1VnTp8tD_PG6_nkDRaGw=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"},
- {name:"WestUG TV",color:"#7b1fa2",youtube:""},
- {name:"Kasese Talk TV",color:"#00897b",youtube:""},
- {name:"Fort Portal Music",color:"#f9a825",youtube:""},
- {name:"Mbarara News",color:"#1e88e5",youtube:""},
- {name:"Hoima Sports",color:"#43a047",youtube:""}
-];
-const GUIDE=[
- {ch:"WestUG Live",slots:[["18:00","Evening News"],["19:00","Evening Neighbours"],["20:00","Market Day"]]},
- {ch:"WestUG TV",slots:[["18:30","Kitchen Kings"],["19:30","The Village Elder"],["21:00","Stand-Up Nights"]]},
- {ch:"Fort Portal Music",slots:[["17:00","Top 10 Countdown"],["19:00","Live Sessions"]]}
-];
-const SHORTS=[
- {caption:"Your headline for a 30-second clip goes here",author:"Channel name",hue:200,youtube:""},
- {caption:"Behind the scenes of Evening Neighbours",author:"WestUG TV",hue:340,youtube:""},
- {caption:"Comedy moment of the week",author:"Stand-Up Nights",hue:30,youtube:""}
-];
+const CHANNELS=[];
+const TV_ARCHIVE=[{"title":"Agacencwire: Chwez esingire eza siizoni ya kabiri eza Ogez League","sub":"TV West Uganda \u00b7 Bushenyi \u00b7 25 Nov 2026 \u00b7 recording","hue":10,"youtube":"Bi8tAz0ka6g"},{"title":"Agacencwire: Abatuura abari omumuhanda gw\u2019egaari y\u2019omwika beeshenyeire amaju gaabo","sub":"TV West Uganda \u00b7 Kasese \u00b7 25 Nov 2026 \u00b7 recording","hue":15,"youtube":"gUd8LJt0ls0"},{"title":"Agacencwire: Abazaire nibashabwa kukuriza abaana omumihanda ehikire","sub":"TV West Uganda \u00b7 Buhweju \u00b7 25 Nov 2026 \u00b7 recording","hue":20,"youtube":"BIT6uy8fT_c"},{"title":"Agacencwire: Aba Bugongi SACCO abahaire ba memba baabo ebirabo","sub":"TV West Uganda \u00b7 Sheema \u00b7 25 Nov 2026 \u00b7 recording","hue":25,"youtube":"jnw-cLdiiKc"},{"title":"Rwenzururu Subjects Call for Action on Palace Construction","sub":"Rwenzori TV \u00b7 8 Sep 2026 \u00b7 recorded news clip","hue":200,"youtube":"tvSNGuJzIOI"},{"title":"OBUSINGA BWAHIKIRYE EMISONI YAYO OMOKYIKALI","sub":"Rwenzori TV \u00b7 Fort Portal \u00b7 8 Sep 2026 \u00b7 recorded news clip","hue":200,"youtube":"Y30Wr9uGdwk"},{"title":"BWAKERE RWENZORI","sub":"Rwenzori TV \u00b7 5 Aug 2026 \u00b7 recorded programme","hue":210,"youtube":"jr53MgZ4CE8"},{"title":"TV West \u00b7 recorded broadcast","sub":"TV West \u00b7 archived recording","hue":0,"youtube":"iKM-Mge6-30","logo":"https://yt3.googleusercontent.com/ytc/AIdro_lJbo_CiFIe83QxKYzhzZseVpVFej006pCBy0ba6PaLCyw=s900-c-k-c0x00ffffff-no-rj","cover":"https://yt3.googleusercontent.com/jFs7GkP7GYj6ym4M9tmSVhiXAjzz2cb1L9lgyttFwtHhUKkBt9_EORKqdyuI0iLlJBMTeC9R=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"},{"title":"Rwenzori TV \u00b7 recorded broadcast","sub":"Rwenzori TV \u00b7 July 2023 \u00b7 archived recording","hue":0,"youtube":"_JisVK9_o2E","logo":"https://yt3.googleusercontent.com/E7XrrIyH02rIDQcTRWMvOYG1NbDnBG2VBXBvGgFuCsQgQYfaViRhKSVdAC2ymbnWol4N1V-DZA=s900-c-k-c0x00ffffff-no-rj","cover":"https://yt3.googleusercontent.com/fQX6oC1hARg6VJb4sJVR8VWtySOEu1i7G8V3qiN4ubf_d3HCmRBEML1VnTp8tD_PG6_nkDRaGw=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"}];
+const GUIDE=[];
+const SHORTS=[{"caption":"Mzee Bisinsiino event promotion \u00b7 Mbarara","author":"TV West Uganda \u00b7 24 Nov 2026","hue":20,"youtube":"IKKHlq4wYGg"},{"caption":"Ekivuro kya Mzee Bisinsiino \u00b7 event promotion","author":"TV West Uganda \u00b7 11 Nov 2026","hue":40,"youtube":"03yCIh4vQHA"},{"caption":"Smirnoff Fiestas \u00b7 University Inn, Mbarara","author":"TV West Uganda \u00b7 11 Oct 2026","hue":180,"youtube":"Bb4bdZxh5Yc"},{"caption":"Azawi \u00b7 Smirnoff Fiestas, Mbarara","author":"TV West Uganda \u00b7 11 Oct 2026","hue":200,"youtube":"RMzmRm8XGTo"},{"caption":"Azawi at University Inn, Mbarara","author":"TV West Uganda \u00b7 11 Oct 2026","hue":210,"youtube":"2iGEMZRS80k"},{"caption":"Riddim Selecta \u00b7 Mbarara University","author":"TV West Uganda \u00b7 10 Oct 2026","hue":90,"youtube":"RGWJopBbq1w"},{"caption":"Ray G at Kololo \u00b7 Mbarara viewers","author":"TV West Uganda \u00b7 7 Aug 2026","hue":65,"youtube":"fep4L3vHIXQ"}];
 const PODCASTS=[
  {title:"Morning Talk",sub:"Daily · 45 min",hue:260,audio:""},
  {title:"Music Matters",sub:"Weekly · 30 min",hue:130,audio:""},
@@ -182,7 +165,7 @@ const PODCASTS=[
 /* =========================================================== */
 
 const $=s=>document.querySelector(s);
-const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS};
+const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS,a:TV_ARCHIVE};
 const svg=(p,s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const P={
  home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',
@@ -207,27 +190,27 @@ const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span cla
 const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
 const channelCard=(c,i)=>`<button class="channel-card" data-p="h${i}">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note||"Stream not available yet"}</small></span></span></button>`;
-const thumb=c=>`<div class="lg" style="background:${grad(c.hue)}">${c.title.charAt(0)}</div>`;
+const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.youtube?"":c.title.charAt(0)}</div>`;
 
 const VIEWS={
- home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span></button>`).join("")}</div>
+ home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span><small class="banner-credit">${b.credit||""}</small></button>`).join("")}</div>
   <h2 class="sec">Entertainment</h2>
   <div class="pills">${CATS.map(c=>`<button class="pill${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("")}</div>
   <div class="row">${CONTENT.map((c,i)=>c.cat===cat?poster(c,"c"+i):"").join("")}</div>
-  <button class="feature" data-v="channels"><span>WestUG<br>Plus TV<small>Browse channels</small></span></button>`,
- channels:()=>`<div class="channel-list">${CHANNELS.map(channelCard).join("")}</div>`,
- guide:()=>`<div class="list">${GUIDE.map(g=>`<div class="gh">${g.ch}</div>${g.slots.map(s=>`<div class="slot"><b>${s[0]}</b><span>${s[1]}</span></div>`).join("")}`).join("")}</div>`,
+  <button class="feature" data-v="channels"><span>WestUG<br>Plus TV<small>Recorded TV & channels</small></span></button>`,
+ channels:()=>`<div class="channel-list">${CHANNELS.length?CHANNELS.map(channelCard).join(""):`<p class="empty">No verified live streams available yet. Find recorded shows in More → TV archive.</p>`}</div>`,
+ guide:()=>`<p class="empty">No verified TV schedule available yet.</p>`,
  more:()=>`<div class="subtabs">${[["archive","TV archive"],["pod","Podcasts"],["about","About"]].map(t=>`<button class="st${sub===t[0]?" on":""}" data-st="${t[0]}">${t[1]}</button>`).join("")}</div><div class="list">${
-  sub==="archive"?CONTENT.map((c,i)=>rowItem("c"+i,thumb(c),c.title,c.cat+" · "+c.sub)).join("")
+  sub==="archive"?TV_ARCHIVE.map((c,i)=>rowItem("a"+i,thumb(c),c.title,c.sub)).join("")
   :sub==="pod"?PODCASTS.map((c,i)=>rowItem("p"+i,thumb(c),c.title,c.sub)).join("")
   :`<p class="empty">WestUG Plus brings local TV, music and entertainment together in one place. Add your contact details and sign-up links here.</p>`}</div>`,
- shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${grad(s.hue)}"><button class="big" data-p="s${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><p>${s.caption}</p><div class="who"><i></i>${s.author}</div><div class="prog"></div>
+ shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${s.youtube?`linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.15) 70%),url(https://i.ytimg.com/vi/${s.youtube}/hqdefault.jpg) center/cover`:grad(s.hue)}"><button class="big" data-p="s${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><p>${s.caption}</p><div class="who"><i></i>${s.author}</div><div class="prog"></div>
   <div class="act"><button data-a="like" aria-pressed="false" aria-label="Like">${svg(P.up,34)}</button><button data-a="dis" aria-pressed="false" aria-label="Dislike" style="transform:scaleY(-1)">${svg(P.up,34)}</button><button data-a="add" aria-label="Add to my list">${svg(P.plus,38)}</button><button data-a="share" aria-label="Share">${svg(P.share,34)}</button></div></section>`).join("")}</div>`
 };
 
 function results(){
   const t=q.toLowerCase();
-  const hit=[...CONTENT.map((c,i)=>["c"+i,thumb(c),c.title,c.cat,c.title]),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  const hit=[...CONTENT.map((c,i)=>["c"+i,thumb(c),c.title,c.cat,c.title]),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
   return hit.length?`<div class="list">${hit.map(x=>rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
