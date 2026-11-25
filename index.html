@@ -125,7 +125,7 @@ const CONTENT=[
  {cat:"Concerts",title:"Sunrise Festival",sub:"Live recording",hue:45,youtube:""}, {cat:"Concerts",title:"Kyakere Carnival 2026",sub:"Live recording · 18 October 2026",hue:210,youtube:"5LrxzVuU6Qo"}
 ];
 const CHANNELS=[
- {name:"Rwenzori TV",color:"#e53935",youtube:"_JisVK9_o2E"},
+ {name:"Rwenzori TV",color:"#e53935",youtube:"_JisVK9_o2E",liveUrl:"https://rwenzoritv.com/live/"},
  {name:"WestUG TV",color:"#7b1fa2",youtube:""},
  {name:"Kasese Talk TV",color:"#00897b",youtube:""},
  {name:"Fort Portal Music",color:"#f9a825",youtube:""},
@@ -210,6 +210,7 @@ function render(){
 function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display="none",3500)}
 function play(k){
   const c=SRC[k[0]][+k.slice(1)];
+  if(c.liveUrl){window.open(c.liveUrl,"_blank","noopener,noreferrer");return;}
   if(c.youtube){
     $("#au").pause();$("#dock").classList.remove("on");
     $("#frame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${c.youtube}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="${c.title||c.name||c.caption}"></iframe>`;
