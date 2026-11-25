@@ -42,7 +42,7 @@ header h1{font-size:30px;font-weight:600;margin-right:auto}
 .feature small{display:block;font:600 16px Poppins,sans-serif;color:#fff;text-shadow:none;margin-top:10px}
 .list{padding:0 20px}
 .li{display:flex;align-items:center;gap:20px;padding:14px 0;width:100%}
-.li .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;overflow:hidden}
+.li .lg,.channel-card .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;overflow:hidden;position:relative}.lg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}.channel-list{padding:0 20px;display:grid;gap:14px}.channel-card{width:100%;min-height:170px;border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative;background:#262632;display:flex;align-items:flex-end}.channel-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.channel-card::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,.92))}.channel-info{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:14px;width:100%}.channel-info strong{display:block}.channel-info small{display:block;color:#eee}.player-note{color:#ddd;padding:10px 16px;font-size:13px}.player-note:empty{display:none}
 .li span.n{flex:1}
 .li small{display:block;color:var(--mute);font-size:13px}
 .li svg{color:var(--mute)}
@@ -94,7 +94,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
   <div id="dock"><div><strong id="dt"></strong><small id="ds"></small></div><audio id="au" controls></audio></div>
   <nav aria-label="Main"></nav>
 </div>
-<dialog id="dlg"><button class="close" id="x" aria-label="Close video">✕</button><div class="frame" id="frame"></div></dialog>
+<dialog id="dlg"><button class="close" id="x" aria-label="Close video">✕</button><div class="frame" id="frame"></div><div class="player-note" id="playerNote"></div></dialog>
 <div id="toast" role="status"></div>
 
 <script>
@@ -102,11 +102,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
    youtube: ID after v= in a YouTube link (video, live stream or short)
    audio:   link to an .mp3 file (for music and podcasts)
    Leave both "" until you have the link.  hue = poster colour 0-360 */
-const BANNERS=[
- {title:"Big Introduction Ceremony",tag:"For only 5,000 UGX",cta:"Tap to subscribe",hue:275,youtube:""},
- {title:"Evening Neighbours: New Season",tag:"Starts Friday",cta:"Watch the trailer",hue:340,youtube:""},
- {title:"West Nile Music Night",tag:"Live concert",cta:"Watch now",hue:200,youtube:""}
-];
+const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 · Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 · food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale · travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006"},{"title":"T Paul & Ray G in Mbarara","tag":"Kakyeka concert · recorded performance","cta":"Watch the show","hue":200,"youtube":"_VZ3YlJAxCg"}];
 const CATS=["Drama","Movies","Comedy","Talk & Culture","Reality Shows","Concerts"];
 const CONTENT=[
  {"cat":"Drama","title":"Matayo \u00b7 Episode 11","sub":"Nkore Media TV \u00b7 20 Nov 2026","hue":130,"youtube":"-qEoJ5sAgfs"},
@@ -141,8 +137,8 @@ const CONTENT=[
  {cat:"Concerts",title:"Sunrise Festival",sub:"Live recording",hue:45,youtube:""}, {cat:"Concerts",title:"Kyakere Carnival 2026",sub:"Live recording · 18 October 2026",hue:210,youtube:"5LrxzVuU6Qo"}
 ];
 const CHANNELS=[
- {name:"TV West",color:"#e53935",liveUrl:"https://www.youtube.com/@tvwestuganda"},
- {name:"Rwenzori TV",color:"#e53935",youtube:"_JisVK9_o2E",liveUrl:"https://rwenzoritv.com/live/"},
+ {name:"TV West",color:"#e53935",youtube:"iKM-Mge6-30",note:"Recorded broadcast",logo:"https://yt3.googleusercontent.com/ytc/AIdro_lJbo_CiFIe83QxKYzhzZseVpVFej006pCBy0ba6PaLCyw=s900-c-k-c0x00ffffff-no-rj",cover:"https://yt3.googleusercontent.com/jFs7GkP7GYj6ym4M9tmSVhiXAjzz2cb1L9lgyttFwtHhUKkBt9_EORKqdyuI0iLlJBMTeC9R=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"},
+ {name:"Rwenzori TV",color:"#e53935",youtube:"_JisVK9_o2E",note:"Recorded broadcast · July 2023",liveUrl:"https://rwenzoritv.com/live/",logo:"https://yt3.googleusercontent.com/E7XrrIyH02rIDQcTRWMvOYG1NbDnBG2VBXBvGgFuCsQgQYfaViRhKSVdAC2ymbnWol4N1V-DZA=s900-c-k-c0x00ffffff-no-rj",cover:"https://yt3.googleusercontent.com/fQX6oC1hARg6VJb4sJVR8VWtySOEu1i7G8V3qiN4ubf_d3HCmRBEML1VnTp8tD_PG6_nkDRaGw=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"},
  {name:"WestUG TV",color:"#7b1fa2",youtube:""},
  {name:"Kasese Talk TV",color:"#00897b",youtube:""},
  {name:"Fort Portal Music",color:"#f9a825",youtube:""},
@@ -187,10 +183,11 @@ const TITLES={home:"Home",channels:"Channels",guide:"TV Guide",more:"More",short
 let view="home",cat=CATS[0],sub="archive",q="",bt;
 
 const grad=h=>`linear-gradient(160deg,hsl(${h} 65% 38%),hsl(${(h+45)%360} 60% 14%))`;
-const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="background:${grad(c.hue)}">${c.title}</div><small>${c.sub}</small></button>`;
+const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="background:${c.youtube?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.title}</div><small>${c.sub}</small></button>`;
 const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span class="n">${name}${sub2?`<small>${sub2}</small>`:""}</span>${svg(P.chev,22)}</button>`;
 const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
-const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}</div>`;
+const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
+const channelCard=(c,i)=>`<button class="channel-card" data-p="h${i}">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note||"Stream not available yet"}</small></span></span></button>`;
 const thumb=c=>`<div class="lg" style="background:${grad(c.hue)}">${c.title.charAt(0)}</div>`;
 
 const VIEWS={
@@ -198,8 +195,8 @@ const VIEWS={
   <h2 class="sec">Entertainment</h2>
   <div class="pills">${CATS.map(c=>`<button class="pill${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("")}</div>
   <div class="row">${CONTENT.map((c,i)=>c.cat===cat?poster(c,"c"+i):"").join("")}</div>
-  <button class="feature" data-p="h0"><span>WestUG<br>Plus TV<small>Watch live now</small></span></button>`,
- channels:()=>`<div class="list">${CHANNELS.map((c,i)=>rowItem("h"+i,chLogo(c),c.name)).join("")}</div>`,
+  <button class="feature" data-v="channels"><span>WestUG<br>Plus TV<small>Browse channels</small></span></button>`,
+ channels:()=>`<div class="channel-list">${CHANNELS.map(channelCard).join("")}</div>`,
  guide:()=>`<div class="list">${GUIDE.map(g=>`<div class="gh">${g.ch}</div>${g.slots.map(s=>`<div class="slot"><b>${s[0]}</b><span>${s[1]}</span></div>`).join("")}`).join("")}</div>`,
  more:()=>`<div class="subtabs">${[["archive","TV archive"],["pod","Podcasts"],["about","About"]].map(t=>`<button class="st${sub===t[0]?" on":""}" data-st="${t[0]}">${t[1]}</button>`).join("")}</div><div class="list">${
   sub==="archive"?CONTENT.map((c,i)=>rowItem("c"+i,thumb(c),c.title,c.cat+" · "+c.sub)).join("")
@@ -227,15 +224,16 @@ function render(){
 function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display="none",3500)}
 function play(k){
   const c=SRC[k[0]][+k.slice(1)];
-  if(c.liveUrl){window.open(c.liveUrl,"_blank","noopener,noreferrer");return;}
+  if(c.url){window.open(c.url,"_blank","noopener,noreferrer");return;}
   if(c.youtube){
     $("#au").pause();$("#dock").classList.remove("on");
     $("#frame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${c.youtube}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="${c.title||c.name||c.caption}"></iframe>`;
+    $("#playerNote").textContent=c.note||"";
     $("#dlg").showModal();
   }else if(c.audio){
     $("#au").src=c.audio;$("#au").play().catch(()=>{});
     $("#dt").textContent=c.title;$("#ds").textContent=c.sub||"";$("#dock").classList.add("on");
-  }else toast("Add a YouTube ID or audio link for this title in index.html");
+  }else toast(k[0]==="h"?"Stream not available yet":"This video is not available yet");
 }
 const closeVideo=()=>{$("#dlg").close();$("#frame").innerHTML=""};
 
@@ -247,7 +245,7 @@ $("#me").innerHTML=svg(P.user,24);
 document.addEventListener("click",e=>{
   const t=e.target,g=s=>t.closest(s);
   let n;
-  if(n=g("nav button")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
+  if(n=g("[data-v]")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-c]")){cat=n.dataset.c;render()}
   else if(n=g("[data-st]")){sub=n.dataset.st;render()}
   else if(n=g("[data-a]")){
