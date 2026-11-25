@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e0e13">
+<title>WestUG Plus – Local TV, music and entertainment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0e13;--card:#1a1a22;--line:#33333d;--y:#ffcb05;--mute:#9a9aa8;--ink:#fff}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--bg)}
+body{color:var(--ink);font:400 16px/1.4 Poppins,system-ui,sans-serif;display:flex;justify-content:center}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0;text-align:left}
+:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.app{width:100%;max-width:640px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg)}
+header{display:flex;align-items:center;gap:14px;padding:calc(14px + env(safe-area-inset-top)) 20px 12px}
+header h1{font-size:30px;font-weight:600;margin-right:auto}
+.ic{display:grid;place-items:center;width:40px;height:40px}
+.av{width:46px;height:46px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;color:var(--y)}
+.av svg{fill:var(--y)}
+#sbar{display:none;padding:0 20px 10px}
+#sbar.on{display:block}
+#sbar input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:11px 18px;font:inherit}
+#view{flex:1;overflow-y:auto;padding:4px 0 24px;-webkit-overflow-scrolling:touch}
+.sec{font-size:26px;font-weight:600;padding:0 20px;margin:26px 0 14px}
+.banners{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px;scrollbar-width:none}
+.banners::-webkit-scrollbar,.row::-webkit-scrollbar,.pills::-webkit-scrollbar{display:none}
+.bn{flex:0 0 92%;scroll-snap-align:center;aspect-ratio:16/9;border-radius:18px;padding:18px;display:flex;flex-direction:column;justify-content:center;gap:10px;border:1px solid var(--line)}
+.bn h2{font-size:clamp(20px,5vw,30px);font-weight:700;line-height:1.15;max-width:15ch;color:var(--y)}
+.tag{align-self:flex-start;background:var(--y);color:#111;font-weight:700;border-radius:99px;padding:3px 14px;font-size:14px}
+.cta{align-self:flex-start;border:1px solid #fff;border-radius:99px;padding:3px 14px;font-size:14px;font-weight:600}
+.pills,.row{display:flex;gap:12px;overflow-x:auto;padding:0 20px;scrollbar-width:none}
+.pill{flex:none;border:1px solid var(--line);border-radius:99px;padding:12px 24px;font-weight:500}
+.pill.on{background:var(--y);color:#111;border-color:var(--y)}
+.row{margin-top:18px}
+.po{flex:0 0 clamp(150px,42%,230px)}
+.pi{aspect-ratio:3/4.1;border-radius:16px;border:1px solid var(--line);display:flex;align-items:flex-end;justify-content:center;text-align:center;padding:14px;font-weight:700;font-size:20px;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.po small{display:block;color:var(--mute);margin-top:6px;font-size:13px}
+.feature{display:block;width:calc(100% - 40px);margin:26px 20px 0;aspect-ratio:1.15;border-radius:24px;background:linear-gradient(180deg,#f06bd8,#8a4dff 60%,#2d57ff);display:grid;place-items:center;text-align:center;font:800 clamp(40px,12vw,64px)/1 Poppins,sans-serif;color:var(--y);text-shadow:0 4px 0 #d9480f}
+.feature small{display:block;font:600 16px Poppins,sans-serif;color:#fff;text-shadow:none;margin-top:10px}
+.list{padding:0 20px}
+.li{display:flex;align-items:center;gap:20px;padding:14px 0;width:100%}
+.li .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;overflow:hidden}
+.li span.n{flex:1}
+.li small{display:block;color:var(--mute);font-size:13px}
+.li svg{color:var(--mute)}
+.subtabs{display:flex;gap:28px;padding:0 20px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.st{padding:12px 0 14px;color:var(--mute);font-weight:600;border-bottom:3px solid transparent}
+.st.on{color:#fff;border-color:#fff}
+.gh{font-weight:600;font-size:18px;margin:20px 0 6px}
+.slot{display:flex;gap:18px;padding:8px 0;color:#ddd}
+.slot b{color:var(--y);width:56px;font-weight:600}
+.shorts{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;margin-top:-4px}
+.sh{height:100%;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 20px 28px}
+.sh .big{position:absolute;inset:0;display:grid;place-items:center;width:100%}
+.big i{width:84px;height:84px;border-radius:50%;background:rgba(0,0,0,.45);border:2px solid #fff;display:grid;place-items:center}
+.sh p{position:relative;font-size:19px;font-weight:600;margin-right:64px;text-shadow:0 2px 8px #000}
+.who{position:relative;display:flex;align-items:center;gap:12px;margin:12px 0;color:#eee;font-size:15px}
+.who i{width:40px;height:40px;border-radius:50%;background:#000a;border:1px solid var(--line)}
+.prog{position:relative;height:3px;background:#fff4;border-radius:9px;margin-top:6px}
+.prog::before{content:"";position:absolute;left:0;top:0;height:100%;width:12%;background:#fff;border-radius:9px}
+.act{position:absolute;right:16px;bottom:96px;display:flex;flex-direction:column;gap:22px}
+.act button{width:44px;height:44px;display:grid;place-items:center;filter:drop-shadow(0 2px 4px #000)}
+.act button[aria-pressed=true]{color:var(--y)}
+nav{display:flex;border-top:1px solid var(--line);background:var(--bg);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:500;color:var(--mute)}
+nav button.on{color:var(--y);font-weight:700}
+.empty{color:var(--mute);padding:20px}
+dialog{border:0;border-radius:18px;padding:0;background:#000;width:min(920px,94vw);overflow:hidden}
+dialog::backdrop{background:rgba(0,0,0,.85)}
+.frame{aspect-ratio:16/9;width:100%}
+.frame iframe{width:100%;height:100%;border:0}
+.close{position:absolute;top:8px;right:8px;background:var(--y);color:#111;width:40px;height:40px;border-radius:50%;font-size:20px;z-index:2;text-align:center}
+#dock{display:none;align-items:center;gap:12px;background:var(--card);border-top:2px solid var(--y);padding:8px 16px}
+#dock.on{display:flex}
+#dock strong{display:block;font-size:14px;line-height:1.2}
+#dock small{color:var(--mute)}
+#dock audio{flex:1;min-width:0;height:38px}
+#toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#fff;color:#111;padding:10px 18px;border-radius:99px;display:none;z-index:9;max-width:90vw;text-align:center;font-size:14px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1 id="title">Home</h1>
+    <button class="ic" id="sb" aria-label="Search"></button>
+    <button class="av" id="me" aria-label="Your account"></button>
+  </header>
+  <div id="sbar"><input id="q" type="search" placeholder="Search shows, channels, podcasts" aria-label="Search"></div>
+  <main id="view"></main>
+  <div id="dock"><div><strong id="dt"></strong><small id="ds"></small></div><audio id="au" controls></audio></div>
+  <nav aria-label="Main"></nav>
+</div>
+<dialog id="dlg"><button class="close" id="x" aria-label="Close video">✕</button><div class="frame" id="frame"></div></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+/* ================= EDIT YOUR CONTENT HERE =================
+   youtube: ID after v= in a YouTube link (video, live stream or short)
+   audio:   link to an .mp3 file (for music and podcasts)
+   Leave both "" until you have the link.  hue = poster colour 0-360 */
+const BANNERS=[
+ {title:"Big Introduction Ceremony",tag:"For only 5,000 UGX",cta:"Tap to subscribe",hue:275,youtube:""},
+ {title:"Evening Neighbours: New Season",tag:"Starts Friday",cta:"Watch the trailer",hue:340,youtube:""},
+ {title:"West Nile Music Night",tag:"Live concert",cta:"Watch now",hue:200,youtube:""}
+];
+const CATS=["Drama","Movies","Comedy","Reality Shows","Concerts"];
+const CONTENT=[
+ {cat:"Drama",title:"Evening Neighbours",sub:"Season 2",hue:340,youtube:""},
+ {cat:"Drama",title:"The Village Elder",sub:"Season 3",hue:160,youtube:""},
+ {cat:"Drama",title:"Love on Campus",sub:"Season 1",hue:15,youtube:""},
+ {cat:"Movies",title:"Homecoming",sub:"Feature film",hue:210,youtube:""},
+ {cat:"Movies",title:"The Last Boda",sub:"Feature film",hue:40,youtube:""},
+ {cat:"Comedy",title:"Market Day",sub:"Season 1",hue:30,youtube:""},
+ {cat:"Comedy",title:"Stand-Up Nights",sub:"Special",hue:0,youtube:""},
+ {cat:"Reality Shows",title:"Kitchen Kings",sub:"Season 1",hue:15,youtube:""},
+ {cat:"Reality Shows",title:"Star Search West",sub:"Season 2",hue:290,youtube:""},
+ {cat:"Concerts",title:"Rhythm of the City",sub:"Live recording",hue:130,youtube:"",audio:""},
+ {cat:"Concerts",title:"Sunrise Festival",sub:"Live recording",hue:45,youtube:""}
+];
+const CHANNELS=[
+ {name:"WestUG Live",color:"#e53935",youtube:""},
+ {name:"WestUG TV",color:"#7b1fa2",youtube:""},
+ {name:"Kasese Talk TV",color:"#00897b",youtube:""},
+ {name:"Fort Portal Music",color:"#f9a825",youtube:""},
+ {name:"Mbarara News",color:"#1e88e5",youtube:""},
+ {name:"Hoima Sports",color:"#43a047",youtube:""}
+];
+const GUIDE=[
+ {ch:"WestUG Live",slots:[["18:00","Evening News"],["19:00","Evening Neighbours"],["20:00","Market Day"]]},
+ {ch:"WestUG TV",slots:[["18:30","Kitchen Kings"],["19:30","The Village Elder"],["21:00","Stand-Up Nights"]]},
+ {ch:"Fort Portal Music",slots:[["17:00","Top 10 Countdown"],["19:00","Live Sessions"]]}
+];
+const SHORTS=[
+ {caption:"Your headline for a 30-second clip goes here",author:"Channel name",hue:200,youtube:""},
+ {caption:"Behind the scenes of Evening Neighbours",author:"WestUG TV",hue:340,youtube:""},
+ {caption:"Comedy moment of the week",author:"Stand-Up Nights",hue:30,youtube:""}
+];
+const PODCASTS=[
+ {title:"Morning Talk",sub:"Daily · 45 min",hue:260,audio:""},
+ {title:"Music Matters",sub:"Weekly · 30 min",hue:130,audio:""},
+ {title:"Farm and Family",sub:"Weekly · 25 min",hue:90,audio:""}
+];
+/* =========================================================== */
+
+const $=s=>document.querySelector(s);
+const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS};
+const svg=(p,s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const P={
+ home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',
+ channels:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M10 8v6l5-3zM8 21h8"/>',
+ guide:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 10v10"/>',
+ more:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+ shorts:'<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+ user:'<circle cx="12" cy="9" r="3.5"/><path d="M5 20c1-4 4-5 7-5s6 1 7 5"/>',
+ chev:'<path d="M9 5l7 7-7 7"/>',
+ up:'<path d="M7 11v9H4v-9zM7 11l4-8c2 0 3 1 3 3l-1 4h6a2 2 0 012 2l-1.5 6a2 2 0 01-2 1.5H7"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v8h14v-8"/>',
+ play:'<path d="M8 5v14l11-7z" fill="currentColor"/>'
+};
+const TITLES={home:"Home",channels:"Channels",guide:"TV Guide",more:"More",shorts:"Shorts"};
+let view="home",cat=CATS[0],sub="archive",q="",bt;
+
+const grad=h=>`linear-gradient(160deg,hsl(${h} 65% 38%),hsl(${(h+45)%360} 60% 14%))`;
+const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="background:${grad(c.hue)}">${c.title}</div><small>${c.sub}</small></button>`;
+const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span class="n">${name}${sub2?`<small>${sub2}</small>`:""}</span>${svg(P.chev,22)}</button>`;
+const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
+const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}</div>`;
+const thumb=c=>`<div class="lg" style="background:${grad(c.hue)}">${c.title.charAt(0)}</div>`;
+
+const VIEWS={
+ home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span></button>`).join("")}</div>
+  <h2 class="sec">Entertainment</h2>
+  <div class="pills">${CATS.map(c=>`<button class="pill${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("")}</div>
+  <div class="row">${CONTENT.map((c,i)=>c.cat===cat?poster(c,"c"+i):"").join("")}</div>
+  <button class="feature" data-p="h0"><span>WestUG<br>Plus TV<small>Watch live now</small></span></button>`,
+ channels:()=>`<div class="list">${CHANNELS.map((c,i)=>rowItem("h"+i,chLogo(c),c.name)).join("")}</div>`,
+ guide:()=>`<div class="list">${GUIDE.map(g=>`<div class="gh">${g.ch}</div>${g.slots.map(s=>`<div class="slot"><b>${s[0]}</b><span>${s[1]}</span></div>`).join("")}`).join("")}</div>`,
+ more:()=>`<div class="subtabs">${[["archive","TV archive"],["pod","Podcasts"],["about","About"]].map(t=>`<button class="st${sub===t[0]?" on":""}" data-st="${t[0]}">${t[1]}</button>`).join("")}</div><div class="list">${
+  sub==="archive"?CONTENT.map((c,i)=>rowItem("c"+i,thumb(c),c.title,c.cat+" · "+c.sub)).join("")
+  :sub==="pod"?PODCASTS.map((c,i)=>rowItem("p"+i,thumb(c),c.title,c.sub)).join("")
+  :`<p class="empty">WestUG Plus brings local TV, music and entertainment together in one place. Add your contact details and sign-up links here.</p>`}</div>`,
+ shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${grad(s.hue)}"><button class="big" data-p="s${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><p>${s.caption}</p><div class="who"><i></i>${s.author}</div><div class="prog"></div>
+  <div class="act"><button data-a="like" aria-pressed="false" aria-label="Like">${svg(P.up,34)}</button><button data-a="dis" aria-pressed="false" aria-label="Dislike" style="transform:scaleY(-1)">${svg(P.up,34)}</button><button data-a="add" aria-label="Add to my list">${svg(P.plus,38)}</button><button data-a="share" aria-label="Share">${svg(P.share,34)}</button></div></section>`).join("")}</div>`
+};
+
+function results(){
+  const t=q.toLowerCase();
+  const hit=[...CONTENT.map((c,i)=>["c"+i,thumb(c),c.title,c.cat,c.title]),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  return hit.length?`<div class="list">${hit.map(x=>rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
+}
+function render(){
+  $("#title").textContent=TITLES[view];
+  document.querySelectorAll("nav button").forEach(b=>{const on=b.dataset.v===view;b.classList.toggle("on",on);on?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
+  $("#view").innerHTML=q?results():VIEWS[view]();
+  $("#view").style.overflowY=view==="shorts"&&!q?"hidden":"auto";
+  clearInterval(bt);
+  if(view==="home"&&!q&&!matchMedia("(prefers-reduced-motion:reduce)").matches){
+    bt=setInterval(()=>{const b=$("#bn");if(!b)return;const w=b.firstElementChild.offsetWidth+12;b.scrollTo({left:b.scrollLeft+w>=b.scrollWidth-w/2?0:b.scrollLeft+w,behavior:"smooth"})},5000);
+  }
+}
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display="none",3500)}
+function play(k){
+  const c=SRC[k[0]][+k.slice(1)];
+  if(c.youtube){
+    $("#au").pause();$("#dock").classList.remove("on");
+    $("#frame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${c.youtube}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="${c.title||c.name||c.caption}"></iframe>`;
+    $("#dlg").showModal();
+  }else if(c.audio){
+    $("#au").src=c.audio;$("#au").play().catch(()=>{});
+    $("#dt").textContent=c.title;$("#ds").textContent=c.sub||"";$("#dock").classList.add("on");
+  }else toast("Add a YouTube ID or audio link for this title in index.html");
+}
+const closeVideo=()=>{$("#dlg").close();$("#frame").innerHTML=""};
+
+/* chrome */
+$("nav").innerHTML=Object.keys(TITLES).map(v=>`<button data-v="${v}">${svg(P[v])}<span>${TITLES[v]}</span></button>`).join("");
+$("#sb").innerHTML=svg(P.search,30);
+$("#me").innerHTML=svg(P.user,24);
+
+document.addEventListener("click",e=>{
+  const t=e.target,g=s=>t.closest(s);
+  let n;
+  if(n=g("nav button")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
+  else if(n=g("[data-c]")){cat=n.dataset.c;render()}
+  else if(n=g("[data-st]")){sub=n.dataset.st;render()}
+  else if(n=g("[data-a]")){
+    const a=n.dataset.a;
+    if(a==="like"||a==="dis"){const on=n.getAttribute("aria-pressed")!=="true";n.parentElement.querySelectorAll("[aria-pressed]").forEach(b=>b.setAttribute("aria-pressed","false"));n.setAttribute("aria-pressed",on)}
+    else if(a==="add")toast("Added to your list");
+    else (navigator.share?navigator.share({title:"WestUG Plus",url:location.href}).catch(()=>{}):toast("Copy the page link to share"));
+  }
+  else if(n=g("[data-p]"))play(n.dataset.p);
+  else if(g("#sb")){const b=$("#sbar");b.classList.toggle("on");if(b.classList.contains("on"))$("#q").focus()}
+  else if(g("#me"))toast("Sign-in is coming soon");
+});
+$("#q").addEventListener("input",e=>{q=e.target.value.trim();render()});
+$("#x").addEventListener("click",closeVideo);
+$("#dlg").addEventListener("click",e=>{if(e.target.id==="dlg")closeVideo()});
+$("#dlg").addEventListener("cancel",()=>{$("#frame").innerHTML=""});
+render();
+</script>
+</body>
+</html>
