@@ -73,7 +73,7 @@ nav button.on{color:var(--y);font-weight:700}
 .empty{color:var(--mute);padding:20px}
 dialog{border:0;border-radius:18px;padding:0;background:#000;width:min(920px,94vw);overflow:hidden}
 dialog::backdrop{background:rgba(0,0,0,.85)}
-.frame{aspect-ratio:16/9;width:100%}.frame.audio-frame{aspect-ratio:auto;height:210px}.video-fallback summary{cursor:pointer;color:#ddd}
+.frame{aspect-ratio:16/9;width:100%}.frame.audio-frame{aspect-ratio:auto;height:210px}.frame.social-frame{aspect-ratio:auto;height:min(640px,70vh);background:#fff}dialog:has(.social-frame){overflow-y:auto;max-height:90vh}.video-fallback summary{cursor:pointer;color:#ddd}
 .frame iframe{width:100%;height:100%;border:0}
 .close{position:absolute;top:8px;right:8px;background:var(--y);color:#111;width:40px;height:40px;border-radius:50%;font-size:20px;z-index:2;text-align:center}
 #dock{display:none;align-items:center;gap:12px;background:var(--card);border-top:2px solid var(--y);padding:8px 16px}
@@ -108,6 +108,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 \u00b7 Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/","image":"https://prowesscomms.com/wp/wp-content/uploads/2026/07/4.jpg","credit":"Previous edition \u00b7 photo: Prowess Communications"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 \u00b7 food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/","image":"https://www.showbizuganda.com/wp-content/uploads/2026/11/kisoro.png","credit":"Event poster \u00b7 Showbiz Uganda"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale \u00b7 travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006","image":"https://upload.wikimedia.org/wikipedia/commons/d/d4/Crater_lakes_in_Fort_Portal.jpg","credit":"Ozelleronny / Wikimedia Commons \u00b7 CC BY-SA 4.0"},{"title":"T Paul & Ray G in Mbarara","tag":"Kakyeka concert \u00b7 recorded performance","cta":"Watch the show","hue":200,"youtube":"_VZ3YlJAxCg","image":"https://i.ytimg.com/vi/_VZ3YlJAxCg/hqdefault.jpg","credit":"Video thumbnail"}];
 const CATS=["Music","Drama","Movies","Comedy","Talk & Culture","Reality Shows","Concerts"];
 const CONTENT=[
+ {"cat":"Music","title":"Heli Baibe · Kasese Neon Rave","sub":"Rwenzori Marathon event footage · Kasese · 23 Aug 2026 · X","hue":275,"social":"2091489720995869094","url":"https://x.com/HeliBaibe/status/2091489720995869094"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 7", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Oct 2026 recording", "hue": 280, "youtube": "2xd1EP9r9fw"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 6", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Sep 2026 recording", "hue": 280, "youtube": "q3ZUDRV0FhE"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 5", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Sep 2026 recording", "hue": 280, "youtube": "Y8azPdetDyY"},
@@ -230,7 +231,7 @@ const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.yti
 
 const VIDEO_PAGE_SIZE=20;
 function videoGrid(){
-  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.youtube||c.audio||c.embed));
+  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.youtube||c.audio||c.embed||c.social));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
   const current=items.slice(0,(videoPage+1)*VIDEO_PAGE_SIZE);
   return `<div class="row">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">More</button></div>`:""}`;
@@ -256,7 +257,7 @@ const VIEWS={
 
 function results(){
   const t=q.toLowerCase();
-  const hit=[...CONTENT.map((c,i)=>(c.youtube||c.audio||c.embed)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  const hit=[...CONTENT.map((c,i)=>(c.youtube||c.audio||c.embed||c.social)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
   return hit.length?`<div class="list">${hit.map(x=>rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
@@ -308,14 +309,16 @@ const youtubeAPI=new Promise(resolve=>{
 function play(k){
   const c=SRC[k[0]][+k.slice(1)];
   const session=++playerSession;
-  if(c.embed || c.channelId || c.youtube){
+  if(c.embed || c.social || c.channelId || c.youtube){
     $("#au").pause();$("#dock").classList.remove("on");
     const frame=$("#frame"), fallback=$(".video-fallback"), noteEl=$("#playerNote");
-    frame.classList.toggle("audio-frame",!!c.embed);
-    fallback.open=!!c.channelId;
+    frame.classList.toggle("audio-frame",!!c.embed);frame.classList.toggle("social-frame",!!c.social);
+    fallback.open=!!(c.channelId||c.social);
     let src, original, note;
     const apiParams="&enablejsapi=1"+(/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"");
-    if(c.embed){
+    if(c.social){
+      src="https://platform.twitter.com/embed/Tweet.html?id="+encodeURIComponent(c.social);original=c.url;note="Tap play in the post. If it does not load, open the original below.";
+    }else if(c.embed){
       src=c.embed;original=c.url;note="Tap play to listen here.";
     }else if(c.channelId){
       src="https://www.youtube.com/embed/live_stream?channel="+encodeURIComponent(c.channelId)+"&autoplay=1&playsinline=1&rel=0"+apiParams;
@@ -330,7 +333,7 @@ function play(k){
     iframe.referrerPolicy="strict-origin-when-cross-origin";iframe.allowFullscreen=true;
     frame.replaceChildren(iframe);noteEl.textContent=note;$("#youtubeLink").href=original;
     $("#dlg").showModal();iframe.src=src;
-    if(!c.embed) youtubeAPI.then(ready=>{
+    if(!c.embed && !c.social) youtubeAPI.then(ready=>{
       if(!ready || session!==playerSession || !iframe.isConnected)return;
       let playing=false;
       try{new YT.Player(iframe,{events:{
