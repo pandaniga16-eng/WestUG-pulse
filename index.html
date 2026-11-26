@@ -284,10 +284,10 @@ const $=s=>document.querySelector(s);
 CHANNELS.push(
  {name:"NTV Uganda",logo:"https://ntv.co.ug/wp-content/uploads/2025/07/ntv_logo_bg.png",color:"#b31b1b",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/abul2026.m3u8",url:"https://ntv.co.ug/live-tv"},
  {name:"Spark TV",logo:"https://www.nationmedia.com/wp-content/uploads/2017/06/Spark-Logo.png",color:"#db246d",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/spark2026.m3u8",url:"https://ntv.co.ug/spark-live-tv-2"},
- {name:"Bukedde 1",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde1flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/477f4adb-98c3-48e7-9269-3f52592f80dc.png",url:"https://www.newvision.co.ug/tv/4"},
- {name:"Bukedde 2",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde2flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/a8cbf15c-ba7e-448e-9aaf-ab1a82a62627.png",url:"https://www.newvision.co.ug/tv/5"},
- {name:"Wan Luo TV",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/luotv-flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/4ec96505-fec5-479b-8850-e68b1871bca2.png",url:"https://www.newvision.co.ug/tv/11"},
- {name:"Afrodiaspora TV",color:"#9a6926",note:"Live TV · plays here",frame:"https://player.viloud.tv/embed/channel/3c895315d3fd272711ddaa5bd4011de3",logo:"https://adtv.live/wp-content/uploads/2026/08/cropped-ChatGPT-Image-Aug-4-2026-01_02_03-AM-192x192.png",url:"https://adtv.live/",fallbackClosed:true},
+ {name:"Bukedde 1",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde1flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/477f4adb-98c3-48e7-9269-3f52592f80dc.png",noOfficialLink:true},
+ {name:"Bukedde 2",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde2flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/a8cbf15c-ba7e-448e-9aaf-ab1a82a62627.png",noOfficialLink:true},
+ {name:"Wan Luo TV",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/luotv-flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/4ec96505-fec5-479b-8850-e68b1871bca2.png",noOfficialLink:true},
+ {name:"Afrodiaspora TV",color:"#9a6926",note:"Live TV · plays here",frame:"https://player.viloud.tv/embed/channel/3c895315d3fd272711ddaa5bd4011de3",logo:"https://adtv.live/wp-content/uploads/2026/08/cropped-ChatGPT-Image-Aug-4-2026-01_02_03-AM-192x192.png",noOfficialLink:true,fallbackClosed:true},
 );
 /* Radio: put each station's direct audio stream (https, .mp3/.aac/.m3u8-free) in "stream".
    While "stream" is empty, the station's page loads inside the player window ("frame"). */
@@ -324,7 +324,7 @@ const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
 const channelCard=(c,i)=>c.url&&!playable(c)
  ?`<div class="station"><a class="channel-card" href="${c.url}" target="_blank" rel="noopener noreferrer" aria-label="Open ${c.name} official page (opens a new tab)"><span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Open official page ↗</small></span></span></a></div>`
- :`<div class="station"><button class="channel-card" data-p="h${i}" aria-label="Watch ${c.name} here">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Tap to watch here</small></span></span></button>${(c.youtube&&c.url)||c.alwaysOfficial?`<div class="station-links"><a href="${c.url}" target="_blank" rel="noopener noreferrer">Open official source ↗</a></div>`:""}</div>`;
+ :`<div class="station"><button class="channel-card" data-p="h${i}" aria-label="Watch ${c.name} here">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>${c.noOfficialLink?"Tap to watch live here":"Tap to watch here"}</small></span></span></button>${!c.noOfficialLink&&((c.youtube&&c.url)||c.alwaysOfficial)?`<div class="station-links"><a href="${c.url}" target="_blank" rel="noopener noreferrer">Open official source ↗</a></div>`:""}</div>`;
 const radioCard=(c,i)=>`<button class="radio-card" data-p="r${i}" aria-label="Play ${c.name}">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Tap to listen here</small></span>${svg(P.play,22)}</button>`;
 const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.youtube?"":c.title.charAt(0)}</div>`;
 
@@ -461,6 +461,13 @@ function play(k){
   const c=SRC[k[0]]&&SRC[k[0]][+k.slice(1)];
   if(!c)return;
   if(playable(c))preparePlayer(k,c);
+  // The selected four live stations have no external fallback link, even on error.
+  const existingLink=$("#youtubeLink");
+  if(c.noOfficialLink){if(existingLink)existingLink.remove()}
+  else if(!existingLink){
+    const link=document.createElement("a");link.id="youtubeLink";link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open the original source";
+    $(".video-fallback p").appendChild(link);
+  }
   const session=++playerSession;
   killHls();
   if(c.hls){
@@ -468,7 +475,7 @@ function play(k){
     const frame=$("#frame"),fallback=$(".video-fallback"),note=$("#playerNote");
     frame.classList.remove("audio-frame","social-frame");fallback.hidden=false;fallback.open=!!c.alwaysOfficial;
     note.className="player-note";note.textContent="Connecting to live stream…";
-    $("#youtubeLink").href=c.siteUrl||c.url||c.hls;
+    if(!c.noOfficialLink)$("#youtubeLink").href=c.siteUrl||c.url||c.hls;
     const video=document.createElement("video");video.controls=true;video.playsInline=true;video.autoplay=true;video.setAttribute("aria-label",(c.name||"Live TV")+" live stream");
     frame.replaceChildren(video);
     const fail=()=>{if(session===playerSession){note.textContent="This stream is offline or blocked right now. Please try again later.";fallback.open=true}};
@@ -522,7 +529,7 @@ function play(k){
     iframe.title=(c.title||c.name||c.caption||"WEST PULSE UG")+" player";
     iframe.allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
     iframe.referrerPolicy="strict-origin-when-cross-origin";iframe.allowFullscreen=true;
-    frame.replaceChildren(iframe);noteEl.textContent=note;$("#youtubeLink").href=original;
+    frame.replaceChildren(iframe);noteEl.textContent=note;if(!c.noOfficialLink)$("#youtubeLink").href=original;
     openPlayer();iframe.src=src;
     if(!c.embed && !c.social && !c.frame) youtubeAPI.then(ready=>{
       if(!ready || session!==playerSession || !iframe.isConnected)return;
