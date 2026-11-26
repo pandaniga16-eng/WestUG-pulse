@@ -173,6 +173,12 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
 .content-shelf>.po{flex:0 0 clamp(132px,38vw,184px);scroll-snap-align:start}
 .category-shelf{margin-top:6px}.video-pages{justify-content:flex-start}.video-pages button{color:var(--y)}
 
+
+/* Expanded category view: all videos are visible in a responsive grid. */
+.all-videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px;padding:0 20px 8px;align-items:start}
+@media(min-width:600px){.all-videos{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:900px){.all-videos{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -361,7 +367,7 @@ const P={
  play:'<path d="M8 5v14l11-7z" fill="currentColor"/>'
 };
 const TITLES={home:"Home",channels:"Channels",guide:"TV Guide",more:"More",shorts:"Shorts"};
-let view="home",cat=CATS[0],sub="archive",q="",bt,videoPage=0;
+let view="home",cat=CATS[0],sub="archive",q="",bt,videoExpanded=false;
 
 const grad=h=>`linear-gradient(160deg,hsl(${h} 65% 38%),hsl(${(h+45)%360} 60% 14%))`;
 const poster=(c,k)=>`${c.external?`<a class="po" href="${c.external}" target="_blank" rel="noopener noreferrer" aria-label="${c.title} · ${c.externalLabel||'Listen on AfroCharts'} (opens a new tab)">`:`<button class="po" data-p="${k}">`}<div class="pi" style="background:${c.cover?`linear-gradient(0deg,rgba(0,0,0,.55),transparent 75%),url('${c.cover}') center/cover`:c.youtube?`linear-gradient(0deg,rgba(0,0,0,.55),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${!c.cover&&!c.youtube?c.title:''}</div><strong class="poster-title">${c.title}</strong><small>${c.sub}</small>${c.external?"</a>":"</button>"}`;
@@ -378,8 +384,9 @@ const VIDEO_PAGE_SIZE=20;
 function videoGrid(){
   const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
-  const current=items.slice(0,(videoPage+1)*VIDEO_PAGE_SIZE);
-  return `<div class="shelf-heading"><h3>${cat}</h3><span>Swipe to explore</span></div><div class="content-shelf" aria-label="${cat} videos">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">Show more ${cat}</button></div>`:""}`;
+  const current=videoExpanded?items:items.slice(0,VIDEO_PAGE_SIZE);
+  const heading=`<div class="shelf-heading" id="category-heading"><h3>${cat}</h3><span>${videoExpanded?items.length+' videos':'Swipe to explore'}</span></div>`;
+  return `${heading}<div class="${videoExpanded?'all-videos':'content-shelf'}" aria-label="${cat} videos">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${videoExpanded||current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="${videoExpanded?'Show fewer':'Show all'} videos in ${cat}">${videoExpanded?'Show less':'Show all '+cat}</button></div>`:""}`;
 }
 function moreCategoryShelves(){
   return CATS.filter(name=>name!==cat).map(name=>{
@@ -657,8 +664,8 @@ document.addEventListener("click",e=>{
   else if(n=g("[data-short-move]")){const section=n.closest(".sh"),next=n.dataset.shortMove==="1"?section.nextElementSibling:section.previousElementSibling;if(next)next.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
   else if(n=g("[data-radio]")){view="more";sub="radio";q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-v]")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
-  else if(n=g("[data-c]")){cat=n.dataset.c;videoPage=0;render();const section=$("#entertainment");if(section)section.scrollIntoView({block:"start"})}
-  else if(n=g("[data-video-more]")){const top=$("#view").scrollTop;videoPage++;render();$("#view").scrollTop=top}
+  else if(n=g("[data-c]")){videoExpanded=!!n.closest(".category-shelf");cat=n.dataset.c;render();const section=$(videoExpanded?"#category-heading":"#entertainment");if(section)section.scrollIntoView({block:"start"})}
+  else if(n=g("[data-video-more]")){videoExpanded=!videoExpanded;render();const section=$("#category-heading");if(section)section.scrollIntoView({block:"start"})}
   else if(n=g("[data-st]")){sub=n.dataset.st;render()}
   else if(n=g("[data-a]")){
     const a=n.dataset.a;
