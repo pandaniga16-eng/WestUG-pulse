@@ -35,9 +35,10 @@ header h1{font-size:30px;font-weight:600;margin-right:auto}
 .pill{flex:none;border:1px solid var(--line);border-radius:99px;padding:12px 24px;font-weight:500}
 .pill.on{background:var(--y);color:#111;border-color:var(--y)}
 .row{margin-top:18px}
-.po{flex:0 0 clamp(150px,42%,230px)}
-.pi{aspect-ratio:3/4.1;border-radius:16px;border:1px solid var(--line);display:flex;align-items:flex-end;justify-content:center;text-align:center;padding:14px;font-weight:700;font-size:20px;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-.po small{display:block;color:var(--mute);margin-top:6px;font-size:13px}
+.po{flex:0 0 clamp(100px,29%,165px);min-width:0}
+.pi{aspect-ratio:2/3;border-radius:8px;border:1px solid var(--line);position:relative;overflow:hidden;display:flex;align-items:flex-end;text-align:left;padding:8px;font-weight:600;font-size:13px;line-height:1.2;text-shadow:0 1px 5px #000}
+.pi .video-type{position:absolute;top:6px;left:6px;right:6px;background:#f2f2f2;color:#161616;border-radius:5px;text-align:center;padding:3px 4px;font-size:10px;line-height:1.15;font-weight:600;text-shadow:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pi .video-info{min-width:0;width:100%}.pi .video-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}.po .pi small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#ccc;margin-top:3px;font-size:9px;font-weight:400;line-height:1.25}
 .feature{display:block;width:calc(100% - 40px);margin:26px 20px 0;aspect-ratio:1.15;border-radius:24px;background:linear-gradient(180deg,#f06bd8,#8a4dff 60%,#2d57ff);display:grid;place-items:center;text-align:center;font:800 clamp(40px,12vw,64px)/1 Poppins,sans-serif;color:var(--y);text-shadow:0 4px 0 #d9480f}
 .feature small{display:block;font:600 16px Poppins,sans-serif;color:#fff;text-shadow:none;margin-top:10px}
 .list{padding:0 20px}
@@ -218,7 +219,7 @@ const TITLES={home:"Home",channels:"Channels",guide:"TV Guide",more:"More",short
 let view="home",cat=CATS[0],sub="archive",q="",bt;
 
 const grad=h=>`linear-gradient(160deg,hsl(${h} 65% 38%),hsl(${(h+45)%360} 60% 14%))`;
-const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="background:${c.youtube?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.title}</div><small>${c.sub}</small></button>`;
+const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="background:${c.youtube?`linear-gradient(0deg,rgba(0,0,0,.96),transparent 65%),url(https://i.ytimg.com/vi/${c.youtube}/mqdefault.jpg) center/cover`:grad(c.hue)}"><span class="video-type">${c.cat}</span><span class="video-info"><span class="video-title">${c.title}</span><small>${c.sub||""}</small></span></div></button>`;
 const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span class="n">${name}${sub2?`<small>${sub2}</small>`:""}</span>${svg(P.chev,22)}</button>`;
 const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
@@ -257,29 +258,61 @@ function render(){
   }
 }
 function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display="none",3500)}
+// The initial tap starts the embedded player. If sound autoplay is blocked,
+// retry muted; YouTube and the browser still control final availability.
+let playerSession=0;
+const youtubeAPI=new Promise(resolve=>{
+  if(window.YT && window.YT.Player){resolve(true);return;}
+  window.onYouTubeIframeAPIReady=()=>resolve(true);
+  const script=document.createElement("script");script.src="https://www.youtube.com/iframe_api";
+  script.onerror=()=>resolve(false);document.head.appendChild(script);
+  setTimeout(()=>resolve(!!(window.YT && window.YT.Player)),10000);
+});
 function play(k){
   const c=SRC[k[0]][+k.slice(1)];
+  const session=++playerSession;
   if(c.embed || c.channelId || c.youtube){
     $("#au").pause();$("#dock").classList.remove("on");
-    const frame=$("#frame"), fallback=$(".video-fallback");
+    const frame=$("#frame"), fallback=$(".video-fallback"), noteEl=$("#playerNote");
     frame.classList.toggle("audio-frame",!!c.embed);
     fallback.open=false;
     let src, original, note;
+    const apiParams="&enablejsapi=1"+(/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"");
     if(c.embed){
       src=c.embed;original=c.url;note="Tap play to listen here.";
     }else if(c.channelId){
-      src="https://www.youtube.com/embed/live_stream?channel="+encodeURIComponent(c.channelId)+"&autoplay=1&playsinline=1&rel=0";
-      original=c.liveUrl;note="Available when the station is broadcasting live. If playback doesn't start, tap play.";
+      src="https://www.youtube.com/embed/live_stream?channel="+encodeURIComponent(c.channelId)+"&autoplay=1&playsinline=1&rel=0"+apiParams;
+      original=c.liveUrl;note="Available when the station is broadcasting live.";
     }else{
-      src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0";
-      original="https://www.youtube.com/watch?v="+encodeURIComponent(c.youtube);note=c.note||"If playback doesn't start, tap play.";
+      src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0"+apiParams;
+      original="https://www.youtube.com/watch?v="+encodeURIComponent(c.youtube);note=c.note||"";
     }
     const iframe=document.createElement("iframe");
-    iframe.src=src;iframe.title=(c.title||c.name||c.caption||"WestUG Plus")+" player";
+    iframe.title=(c.title||c.name||c.caption||"WestUG Plus")+" player";
     iframe.allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
     iframe.referrerPolicy="strict-origin-when-cross-origin";iframe.allowFullscreen=true;
-    frame.replaceChildren(iframe);$("#playerNote").textContent=note;$("#youtubeLink").href=original;
-    $("#dlg").showModal();return;
+    frame.replaceChildren(iframe);noteEl.textContent=note;$("#youtubeLink").href=original;
+    $("#dlg").showModal();iframe.src=src;
+    if(!c.embed) youtubeAPI.then(ready=>{
+      if(!ready || session!==playerSession || !iframe.isConnected)return;
+      let mutedRetry=false, playing=false;
+      try{new YT.Player(iframe,{events:{
+        onReady:e=>{if(session===playerSession)e.target.playVideo()},
+        onAutoplayBlocked:e=>{
+          if(session!==playerSession)return;
+          if(!mutedRetry){mutedRetry=true;e.target.mute();e.target.playVideo();}
+          else noteEl.textContent="Playback was blocked. Tap play in the video to start.";
+        },
+        onStateChange:e=>{
+          if(session!==playerSession)return;
+          if(e.data===YT.PlayerState.PLAYING){playing=true;noteEl.textContent=mutedRetry?"Playing muted. Use the player sound control to unmute.":note;}
+        },
+        onError:()=>{if(session===playerSession)noteEl.textContent="This video may be unavailable here. Try the original source below.";}
+      }});
+      setTimeout(()=>{if(session===playerSession&&!playing&&!noteEl.textContent)noteEl.textContent="If playback is blocked, tap play in the video."},12000);
+      }catch(e){/* The original iframe and source link remain available. */}
+    });
+    return;
   }
   if(c.url){window.open(c.url,"_blank","noopener,noreferrer");return;}
   if(c.audio){
@@ -287,7 +320,7 @@ function play(k){
     $("#dt").textContent=c.title;$("#ds").textContent=c.sub||"";$("#dock").classList.add("on");
   }else toast(k[0]==="h"?"Stream not available yet":"This video is not available yet");
 }
-const closeVideo=()=>{$("#dlg").close();$("#frame").innerHTML=""};
+const closeVideo=()=>{playerSession++;$("#dlg").close();$("#frame").innerHTML=""};
 
 /* chrome */
 $("nav").innerHTML=Object.keys(TITLES).map(v=>`<button data-v="${v}">${svg(P[v])}<span>${TITLES[v]}</span></button>`).join("");
@@ -313,7 +346,7 @@ document.addEventListener("click",e=>{
 $("#q").addEventListener("input",e=>{q=e.target.value.trim();render()});
 $("#x").addEventListener("click",closeVideo);
 $("#dlg").addEventListener("click",e=>{if(e.target.id==="dlg")closeVideo()});
-$("#dlg").addEventListener("cancel",()=>{$("#frame").innerHTML=""});
+$("#dlg").addEventListener("cancel",()=>{playerSession++;$("#frame").innerHTML=""});
 render();
 </script>
 </body>
