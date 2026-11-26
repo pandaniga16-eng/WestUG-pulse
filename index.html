@@ -90,28 +90,30 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;overflow:hidden}
 .explore-cover{position:relative}.youtube-badge{position:absolute;top:8px;left:8px;display:flex;gap:4px;align-items:center;padding:4px 6px;border-radius:7px;background:rgba(0,0,0,.8);font:700 11px Arial,sans-serif;color:white;text-shadow:none}.youtube-badge svg{flex:none}
 
-/* Shorts only: keep the whole portrait player visible, with controls outside it. */
+/* Full-bleed cover, with the embedded YouTube player unobstructed. */
 #view:has(.shorts){padding:0}
 .shorts{margin:0;scrollbar-width:none;background:#08080b}
 .shorts::-webkit-scrollbar{display:none}
-.sh{padding:8px 8px 10px;display:grid;justify-content:stretch;grid-template-rows:minmax(0,1fr) auto;gap:8px;overflow:hidden;scroll-snap-stop:always}
-.short-player-row{display:flex;min-width:0;min-height:0;gap:6px}
-.short-stage{flex:1;min-width:0;min-height:0;display:flex;justify-content:center;align-items:center;container-type:size}
-.sh .big,.short-frame{position:relative;inset:auto;flex:none;width:min(100%,calc(100cqh * 9 / 16));height:auto;aspect-ratio:9/16;max-height:100%;min-width:0;min-height:0;border-radius:12px;background:#000;overflow:hidden}
-.sh .big{display:grid;place-items:center}
+.sh{padding:0;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:0;overflow:hidden;scroll-snap-stop:always;background-position:center;background-size:cover}
+.short-player-row{display:flex;min-width:0;min-height:0}
+.short-stage{flex:1;min-width:0;min-height:0;position:relative}
+.sh .big,.short-frame{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;border-radius:0;overflow:hidden}
+.sh .big{display:grid;place-items:center;background:transparent}
+.short-frame{background:#000}
 .sh .big[hidden],.short-frame[hidden]{display:none}
 .short-frame iframe{display:block;width:100%;height:100%;border:0}
-.short-rail{flex:0 0 44px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:4px}
-.short-nav,.act{position:static;display:flex;flex-direction:column;gap:4px}
-.short-nav button,.act button{width:42px;height:42px;border-radius:50%;background:#111c;display:grid;place-items:center}
+.short-rail{flex:0 0 58px;min-height:0;display:flex;flex-direction:column;align-items:center;padding:8px 4px;gap:4px}
+.short-nav,.act{position:static;display:flex;flex-direction:column;gap:5px}
+.short-nav button,.act button{width:44px;height:44px;border-radius:50%;background:#0009;display:grid;place-items:center}
 .short-nav button{font-size:23px}
-.short-tip{position:static;width:44px;font-size:9px;line-height:1.2}
+.short-tip{position:static;width:50px;font-size:10px;line-height:1.2}
 .short-rail .act{margin-top:auto}
-.short-details{background:#101016e8;border-radius:10px;padding:8px 10px;min-width:0}
-.sh .short-details p{font-size:15px;line-height:1.25;margin:0;overflow-wrap:anywhere}
-.sh .who{margin:3px 0;font-size:12px;line-height:1.3}
+.short-details{background:linear-gradient(transparent,rgba(0,0,0,.88));padding:24px 16px 12px;min-width:0;text-shadow:0 1px 5px #000}
+.sh .short-details p{font-size:16px;line-height:1.25;margin:0;overflow-wrap:anywhere}
+.sh .who{margin:4px 0;font-size:13px;line-height:1.3}
 .short-source{margin:3px 0 0;font-size:11px;line-height:1.35;overflow-wrap:anywhere}
-@media(max-height:650px){.short-tip{display:none}.short-nav,.act{gap:0}.short-nav button,.act button{width:36px;height:36px}.act button svg{width:25px;height:25px}.short-rail{flex-basis:36px}.sh{gap:4px;padding:4px}.short-details{padding:5px 8px}}
+@media(max-height:650px){.short-tip{display:none}.short-nav,.act{gap:0}.short-nav button,.act button{width:36px;height:36px}.act button svg{width:25px;height:25px}.short-rail{flex-basis:48px;padding:3px}.short-details{padding:12px 12px 6px}}
+@media(min-width:700px){.shorts{max-width:480px;margin:auto}}
 
 /* Immersive player: fullscreen app view, with the original controls and source links. */
 #dlg{position:fixed;inset:0;width:100%;height:100%;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;overflow:auto;background:#0e0e13;color:#fff;overscroll-behavior:contain}
@@ -352,7 +354,7 @@ const VIEWS={
   :sub==="radio"?`<section class="radio-list"><h2>Radio</h2><p>Tap a station to listen here. If a station page does not load in the player, use the “Open the original source” link under it.</p>${RADIO.map(radioCard).join("")}</section>`
   :sub==="pod"?`<p class="pod-intro">Podcasts &amp; interviews from Western Uganda and beyond. Tap an episode to play it here when available.</p>`+PODCASTS.map((c,i)=>rowItem("p"+i,thumb(c),c.title,c.sub)).join("")
   :`<div class="about-page"><h2>About WEST PULSE UG</h2><p>WEST PULSE UG brings Western Uganda’s music, entertainment, conversations and TV together in one place.</p><p>Explore music, films, Shorts, podcasts and interviews, plus TV West, Rwenzori TV and UBC Television. Visit the TV archive for recorded programmes and the TV Guide for station updates.</p><p>Videos and other media are provided by their original creators and stations. Availability and live broadcasts depend on the source. If a player cannot start, open the help in the player for the original source.</p></div>`}</div>`,
- shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${s.youtube?`linear-gradient(0deg,rgba(0,0,0,.95),rgba(0,0,0,.8)),url(https://i.ytimg.com/vi/${s.youtube}/hqdefault.jpg) center/cover`:grad(s.hue)}"><div class="short-player-row"><div class="short-stage"><button class="big" data-short-play="${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><div class="short-frame" hidden></div></div><div class="short-rail"><div class="short-nav"><button data-short-move="-1" aria-label="Previous short" ${i===0?"disabled":""}>↑</button><button data-short-move="1" aria-label="Next short" ${i===SHORTS.length-1?"disabled":""}>↓</button></div><span class="short-tip">Swipe up for more</span><div class="act"><button data-a="like" aria-pressed="false" aria-label="Like">${svg(P.up,34)}</button><button data-a="dis" aria-pressed="false" aria-label="Dislike" style="transform:scaleY(-1)">${svg(P.up,34)}</button><button data-a="add" aria-label="Add to my list">${svg(P.plus,38)}</button><button data-a="share" aria-label="Share">${svg(P.share,34)}</button></div></div></div><div class="short-details"><p>${s.caption}</p><div class="who">${s.author}</div><div class="short-source">YouTube · <a href="https://www.youtube.com/watch?v=${encodeURIComponent(s.youtube)}" target="_blank" rel="noopener noreferrer">Open original if playback fails</a><span class="short-status"> · If autoplay is blocked, tap play</span></div></div></section>`).join("")}</div>`
+ shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${s.youtube?`linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.12)),url(https://i.ytimg.com/vi/${s.youtube}/hqdefault.jpg) center/cover`:grad(s.hue)}"><div class="short-player-row"><div class="short-stage"><button class="big" data-short-play="${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><div class="short-frame" hidden></div></div><div class="short-rail"><div class="short-nav"><button data-short-move="-1" aria-label="Previous short" ${i===0?"disabled":""}>↑</button><button data-short-move="1" aria-label="Next short" ${i===SHORTS.length-1?"disabled":""}>↓</button></div><span class="short-tip">Swipe up for more</span><div class="act"><button data-a="like" aria-pressed="false" aria-label="Like">${svg(P.up,34)}</button><button data-a="dis" aria-pressed="false" aria-label="Dislike" style="transform:scaleY(-1)">${svg(P.up,34)}</button><button data-a="add" aria-label="Add to my list">${svg(P.plus,38)}</button><button data-a="share" aria-label="Share">${svg(P.share,34)}</button></div></div></div><div class="short-details"><p>${s.caption}</p><div class="who">${s.author}</div><div class="short-source">YouTube · <a href="https://www.youtube.com/watch?v=${encodeURIComponent(s.youtube)}" target="_blank" rel="noopener noreferrer">Open original if playback fails</a><span class="short-status"> · If autoplay is blocked, tap play</span></div></div></section>`).join("")}</div>`
 };
 
 function results(){
