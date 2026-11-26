@@ -287,7 +287,6 @@ CHANNELS.push(
  {name:"Bukedde 1",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde1flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/477f4adb-98c3-48e7-9269-3f52592f80dc.png",url:"https://www.newvision.co.ug/tv/4",alwaysOfficial:true},
  {name:"Bukedde 2",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde2flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/a8cbf15c-ba7e-448e-9aaf-ab1a82a62627.png",url:"https://www.newvision.co.ug/tv/5",alwaysOfficial:true},
  {name:"Wan Luo TV",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/luotv-flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/4ec96505-fec5-479b-8850-e68b1871bca2.png",url:"https://www.newvision.co.ug/tv/11",alwaysOfficial:true},
- {name:"Africanews English",color:"#b31b1b",note:"Live news · tap play if needed",youtube:"NQjabLGdP5g",live:true,logo:"https://yt3.ggpht.com/supFnsx-hsuLdP_Dvj4uJoT_LpvM5_9ctZRwZ_IdiI5GbVjI1BjXhEToXMuxRCmPKXmh44iQnA=s176-c-k-c0x00ffffff-no-rj",url:"https://www.youtube.com/@africanews",alwaysOfficial:true},
  {name:"Afrodiaspora TV",color:"#9a6926",note:"Live African music · tap play if needed",frame:"https://player.viloud.tv/embed/channel/3c895315d3fd272711ddaa5bd4011de3",logo:"https://adtv.live/wp-content/uploads/2026/08/cropped-ChatGPT-Image-Aug-4-2026-01_02_03-AM-192x192.png",url:"https://adtv.live/",alwaysOfficial:true},
 );
 /* Radio: put each station's direct audio stream (https, .mp3/.aac/.m3u8-free) in "stream".
@@ -516,7 +515,7 @@ function play(k){
     }else if(c.frame){
       src=c.frame;original=c.url;note="Tap play on the station page. If it doesn't load here, use the link below.";
     }else{
-      src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0"+(c.live?"":"&loop=1&playlist="+encodeURIComponent(c.youtube))+apiParams;
+      src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0&loop=1&playlist="+encodeURIComponent(c.youtube)+apiParams;
       original="https://www.youtube.com/watch?v="+encodeURIComponent(c.youtube);note=c.note||"";
     }
     const iframe=document.createElement("iframe");
