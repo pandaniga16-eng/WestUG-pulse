@@ -40,7 +40,7 @@ header h1{font-size:30px;font-weight:600;margin-right:auto}
 .pill.on{background:var(--y);color:#111;border-color:var(--y)}
 .row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;overflow:visible;margin-top:18px;align-items:start}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}@media(min-width:700px){.feature-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .video-pages{display:flex;align-items:center;justify-content:center;gap:14px;padding:16px 20px 0;font-size:13px;color:var(--mute)}.video-pages button{border:1px solid var(--line);border-radius:8px;padding:7px 12px;color:#fff}.video-pages button:disabled{opacity:.4;cursor:default}
-.po{min-width:0;width:100%}
+.po{min-width:0;width:100%}a.po,a.li{display:block;color:inherit;text-decoration:none}a.li{display:flex}
 .explore-card,.news-card{min-width:0}.explore-link{display:block;text-decoration:none;color:inherit}.explore-link img{width:100%;aspect-ratio:3/4.1;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#282830}.explore-link strong{display:block;font-size:13px;line-height:1.2;margin-top:6px}.explore-link small,.photo-credit{display:block;font-size:10px;line-height:1.35;color:var(--mute);margin-top:4px}.photo-credit a{color:#ddd;text-decoration:underline}.news-list{display:grid;gap:8px;margin:16px 20px}.news-card{display:block;background:#202020;border:1px solid var(--line);border-radius:12px;padding:13px;color:#fff;text-decoration:none}.news-card strong,.news-card small,.news-card span{display:block}.news-card strong{font-size:14px}.news-card small{color:var(--mute);font-size:12px;line-height:1.4;margin:4px 0}.news-card span{color:var(--y);font-size:12px}
 .pi{aspect-ratio:3/4.1;border-radius:16px;border:1px solid var(--line);display:flex;align-items:flex-end;justify-content:center;text-align:center;padding:6px;font-weight:700;font-size:12px;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.5);overflow-wrap:anywhere}.po small{display:block;color:var(--mute);margin-top:6px;font-size:10px;line-height:1.25}
 .feature{display:grid;width:calc(100% - 40px);margin:26px 20px 0;min-height:110px;padding:14px;border-radius:16px;background:linear-gradient(180deg,#f06bd8,#8a4dff 60%,#2d57ff);place-items:center;text-align:center;font:800 clamp(22px,7vw,34px)/1 Poppins,sans-serif;color:var(--y);text-shadow:0 2px 0 #d9480f}
@@ -163,6 +163,13 @@ const CONTENT=[
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 6", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Sep 2026 recording", "hue": 280, "youtube": "q3ZUDRV0FhE"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 5", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Sep 2026 recording", "hue": 280, "youtube": "Y8azPdetDyY"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 4", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Aug 2026 recording", "hue": 280, "youtube": "dDxOlJx8hhg"},
+ {"cat":"Music","title":"Ebinywa","sub":"Abidja Official · official video · uploaded 20 Nov 2026","hue":205,"youtube":"qiZTNpnhIzk"},
+ {"cat":"Music","title":"Mubaya","sub":"KYAAM ft Kamala Leusa · single 13 Nov 2026 · official video 17 Nov 2026","hue":205,"youtube":"sV6SbUOp7yk"},
+ {"cat":"Music","title":"Omunywani","sub":"Tip Tony \u00b7 6 Nov 2026","hue":280,"youtube":"OMi6jrxdJp0"},
+ {"cat":"Music","title":"Obwolho","sub":"Heli Baibe \u00b7 3 Nov 2026","hue":30,"youtube":"e7dU9LOScWo"},
+ {"cat":"Music","title":"My Baby","sub":"Knice Kee · 9 Oct 2026","hue":205,"youtube":"WOB9uZGWI7g"},
+ {"cat":"Music","title":"Omusokya","sub":"Fresh Brown × Freddy Tinny · uploaded 5 Oct 2026","hue":205,"youtube":"uvj-UFeMOqE"},
+ {"cat":"Music","title":"Be Who You Are","sub":"Fiffy Bwoy ft Unique Giants · 2026 · Listen on AfroCharts ↗","hue":205,"external":"https://www.afrocharts.com/song?id=b89420cb88"},
  {"cat": "Reality Shows", "title": "Kampala Cr\u00e8me \u00b7 Season 4 teaser", "sub": "DStv Africa \u00b7 teaser \u00b7 Nov 2026", "hue": 320, "youtube": "t5NPFhxdlwo"},
  {"cat": "Drama", "title": "Matayo \u00b7 Episode 9", "sub": "Runyankore / Rukiga \u00b7 Nkore Media TV \u00b7 Nov 2026", "hue": 130, "youtube": "HyjZWybu-pQ"},
  {"cat": "Drama", "title": "Matayo \u00b7 Episode 8", "sub": "Runyankore / Rukiga \u00b7 Nkore Media TV \u00b7 Oct 2026", "hue": 130, "youtube": "vvBPDWdR0gE"},
@@ -196,8 +203,6 @@ const CONTENT=[
  {"cat":"Music","title":"Ebikanyilumira","sub":"Be6tin & Peak Band \u00b7 rehearsal performance \u00b7 7 Nov 2026","hue":240,"youtube":"WKzP8BNH7zs"},
  {"cat":"Music","title":"Hurira Ebi Mukama (Hymn 246)","sub":"Sister Charity \u00b7 20 Nov 2026 \u00b7 hymn rendition","hue":175,"youtube":"FpZfKK49nLw"},
  {"cat":"Music","title":"Equalizer","sub":"Goodhope Alex & Feffe Bussi \u00b7 19 Nov 2026","hue":215,"youtube":"-Nr4aGResdA"},
- {"cat":"Music","title":"Omunywani","sub":"Tip Tony \u00b7 6 Nov 2026","hue":280,"youtube":"OMi6jrxdJp0"},
- {"cat":"Music","title":"Obwolho","sub":"Heli Baibe \u00b7 3 Nov 2026","hue":30,"youtube":"e7dU9LOScWo"},
  {"cat":"Movies","title":"The Mbolechi \u00b7 Lhukonzo version","sub":"Alfred Bwambale \u00b7 31 Jul 2026","hue":185,"youtube":"KliKj2mnFU4"},
  {"cat":"Movies","title":"Kibaho the Coffin Maker \u00b7 Part 1","sub":"Lhukonzo film \u00b7 Kasese \u00b7 13 Jun 2026","hue":205,"youtube":"08Xm49P6J40"},
  {"cat":"Movies","title":"Kibaho the Coffin Maker \u00b7 Part 2","sub":"Lhukonzo film \u00b7 Kasese \u00b7 13 Jun 2026","hue":195,"youtube":"6ruuzAib-K8"},
@@ -308,7 +313,7 @@ const TITLES={home:"Home",channels:"Channels",guide:"TV Guide",more:"More",short
 let view="home",cat=CATS[0],sub="archive",q="",bt,videoPage=0;
 
 const grad=h=>`linear-gradient(160deg,hsl(${h} 65% 38%),hsl(${(h+45)%360} 60% 14%))`;
-const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="background:${c.cover?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url('${c.cover}') center/cover`:c.youtube?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.title}</div><small>${c.sub}</small></button>`;
+const poster=(c,k)=>`${c.external?`<a class="po" href="${c.external}" target="_blank" rel="noopener noreferrer" aria-label="${c.title} · listen on AfroCharts (opens a new tab)">`:`<button class="po" data-p="${k}">`}<div class="pi" style="background:${c.cover?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url('${c.cover}') center/cover`:c.youtube?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.title}</div><small>${c.sub}</small>${c.external?"</a>":"</button>"}`;
 const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span class="n">${name}${sub2?`<small>${sub2}</small>`:""}</span>${svg(P.chev,22)}</button>`;
 const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
@@ -320,7 +325,7 @@ const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.yti
 
 const VIDEO_PAGE_SIZE=20;
 function videoGrid(){
-  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.video||c.youtube||c.audio||c.embed||c.social));
+  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
   const current=items.slice(0,(videoPage+1)*VIDEO_PAGE_SIZE);
   return `<div class="row">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">More</button></div>`:""}`;
@@ -359,8 +364,8 @@ const VIEWS={
 
 function results(){
   const t=q.toLowerCase();
-  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...RADIO.map((c,i)=>["r"+i,chLogo(c),c.name,"Radio · tap to listen",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
-  return hit.length?`<div class="list">${hit.map(x=>rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
+  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social||c.external)?["c"+i,thumb(c),c.title,c.external?"Music · Listen on AfroCharts ↗":c.cat,c.title,c.external]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...RADIO.map((c,i)=>["r"+i,chLogo(c),c.name,"Radio · tap to listen",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  return hit.length?`<div class="list">${hit.map(x=>x[5]?`<a class="li" href="${x[5]}" target="_blank" rel="noopener noreferrer">${x[1]}<span class="n">${x[2]}<small>${x[3]}</small></span>${svg(P.chev,22)}</a>`:rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
   $("#title").textContent=TITLES[view];
