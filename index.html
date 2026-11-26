@@ -74,7 +74,7 @@ nav button.on{color:var(--y);font-weight:700}
 dialog{border:0;border-radius:18px;padding:0;background:#000;width:min(920px,94vw);overflow:hidden}
 dialog::backdrop{background:rgba(0,0,0,.85)}
 .frame{aspect-ratio:16/9;width:100%}.frame.audio-frame{aspect-ratio:auto;height:210px}.frame.social-frame{aspect-ratio:auto;height:min(640px,70vh);background:#fff}dialog:has(.social-frame){overflow-y:auto;max-height:90vh}.video-fallback summary{cursor:pointer;color:#ddd}
-.frame iframe{width:100%;height:100%;border:0}
+.frame iframe,.frame video{width:100%;height:100%;border:0}.frame video{object-fit:contain;background:#000}.player-credit{color:#ddd;font-size:13px;line-height:1.5;padding:12px 16px}.player-credit a{color:#ffd600}
 .close{position:absolute;top:8px;right:8px;background:var(--y);color:#111;width:40px;height:40px;border-radius:50%;font-size:20px;z-index:2;text-align:center}
 #dock{display:none;align-items:center;gap:12px;background:var(--card);border-top:2px solid var(--y);padding:8px 16px}
 #dock.on{display:flex}
@@ -108,6 +108,8 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 \u00b7 Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/","image":"https://prowesscomms.com/wp/wp-content/uploads/2026/07/4.jpg","credit":"Previous edition \u00b7 photo: Prowess Communications"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 \u00b7 food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/","image":"https://www.showbizuganda.com/wp-content/uploads/2026/11/kisoro.png","credit":"Event poster \u00b7 Showbiz Uganda"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale \u00b7 travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006","image":"https://upload.wikimedia.org/wikipedia/commons/d/d4/Crater_lakes_in_Fort_Portal.jpg","credit":"Ozelleronny / Wikimedia Commons \u00b7 CC BY-SA 4.0"},{"title":"T Paul & Ray G in Mbarara","tag":"Kakyeka concert \u00b7 recorded performance","cta":"Watch the show","hue":200,"youtube":"_VZ3YlJAxCg","image":"https://i.ytimg.com/vi/_VZ3YlJAxCg/hqdefault.jpg","credit":"Video thumbnail"}];
 const CATS=["Music","Drama","Movies","Comedy","Talk & Culture","Reality Shows","Concerts"];
 const CONTENT=[
+ {"cat":"Talk & Culture","title":"Drive through Ishaka","sub":"Bushenyi · 42 sec · silent footage","hue":125,"video":"ishaka.mp4","creator":"B722N","source":"https://commons.wikimedia.org/wiki/File:Drive_through_Ishaka_town_in_Bushenyi_District.webm"},
+ {"cat":"Talk & Culture","title":"Queen Elizabeth National Park","sub":"Western Uganda · 20 sec · silent footage","hue":155,"video":"queen-elizabeth.mp4","creator":"B722N","source":"https://commons.wikimedia.org/wiki/File:Queen_Elizabeth_National_Park_02.webm"},
  {"cat":"Music","title":"Heli Baibe · Kasese Neon Rave","sub":"Rwenzori Marathon event footage · Kasese · 23 Aug 2026 · X","hue":275,"social":"2091489720995869094","url":"https://x.com/HeliBaibe/status/2091489720995869094"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 7", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Oct 2026 recording", "hue": 280, "youtube": "2xd1EP9r9fw"},
  {"cat": "Reality Shows", "title": "Revealed UG \u00b7 Show 6", "sub": "Ugandan singing competition \u00b7 Play It Loud \u00b7 Sep 2026 recording", "hue": 280, "youtube": "q3ZUDRV0FhE"},
@@ -231,13 +233,14 @@ const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.yti
 
 const VIDEO_PAGE_SIZE=20;
 function videoGrid(){
-  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.youtube||c.audio||c.embed||c.social));
+  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.video||c.youtube||c.audio||c.embed||c.social));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
   const current=items.slice(0,(videoPage+1)*VIDEO_PAGE_SIZE);
   return `<div class="row">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">More</button></div>`:""}`;
 }
 const VIEWS={
  home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span><small class="banner-credit">${b.credit||""}</small></button>`).join("")}</div>
+  <h2 class="sec">Explore Western Uganda</h2><div class="row">${CONTENT.slice(0,2).map((c,i)=>poster(c,"c"+i)).join("")}</div>
   <h2 class="sec">Entertainment</h2>
   <div class="pills">${CATS.map(c=>`<button class="pill${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("")}</div>
   ${videoGrid()}
@@ -257,7 +260,7 @@ const VIEWS={
 
 function results(){
   const t=q.toLowerCase();
-  const hit=[...CONTENT.map((c,i)=>(c.youtube||c.audio||c.embed||c.social)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
   return hit.length?`<div class="list">${hit.map(x=>rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
@@ -309,10 +312,21 @@ const youtubeAPI=new Promise(resolve=>{
 function play(k){
   const c=SRC[k[0]][+k.slice(1)];
   const session=++playerSession;
+  if(c.video){
+    $("#au").pause();$("#dock").classList.remove("on");
+    const frame=$("#frame"),fallback=$(".video-fallback"),note=$("#playerNote");
+    frame.classList.remove("audio-frame","social-frame");fallback.hidden=true;
+    const video=document.createElement("video");video.controls=true;video.playsInline=true;video.preload="metadata";video.src=c.video;video.setAttribute("aria-label",c.title+" video player");frame.replaceChildren(video);
+    note.className="player-note player-credit";note.replaceChildren(document.createTextNode("Silent footage · "+c.title+" by "+c.creator+" · converted to MP4. "));
+    const source=document.createElement("a");source.href=c.source;source.target="_blank";source.rel="noopener noreferrer";source.textContent="Original";note.append(source,document.createTextNode(" · "));
+    const license=document.createElement("a");license.href="https://creativecommons.org/licenses/by-sa/4.0/";license.target="_blank";license.rel="noopener noreferrer";license.textContent="CC BY-SA 4.0";note.append(license);
+    video.addEventListener("error",()=>{if(session===playerSession)note.prepend(document.createTextNode("Video unavailable right now. "))});
+    $("#dlg").showModal();video.play().catch(()=>{});return;
+  }
   if(c.embed || c.social || c.channelId || c.youtube){
     $("#au").pause();$("#dock").classList.remove("on");
     const frame=$("#frame"), fallback=$(".video-fallback"), noteEl=$("#playerNote");
-    frame.classList.toggle("audio-frame",!!c.embed);frame.classList.toggle("social-frame",!!c.social);
+    fallback.hidden=false;noteEl.className="player-note";frame.classList.toggle("audio-frame",!!c.embed);frame.classList.toggle("social-frame",!!c.social);
     fallback.open=!!(c.channelId||c.social);
     let src, original, note;
     const apiParams="&enablejsapi=1"+(/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"");
