@@ -296,8 +296,7 @@ function startShort(button,automatic=false){
 }
 document.addEventListener("visibilitychange",()=>{if(document.hidden){document.querySelectorAll(".short-frame:not([hidden])").forEach(f=>stopShort(f.closest(".sh")))}else if(view==="shorts"&&!q){const feed=$(".shorts");if(feed)feed.dispatchEvent(new Event("scroll"))}});
 function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display="none",3500)}
-// The initial tap starts the embedded player. If sound autoplay is blocked,
-// retry muted; YouTube and the browser still control final availability.
+// Try sound first and let viewers play manually if autoplay is blocked.
 let playerSession=0;
 const youtubeAPI=new Promise(resolve=>{
   if(window.YT && window.YT.Player){resolve(true);return;}
@@ -313,7 +312,7 @@ function play(k){
     $("#au").pause();$("#dock").classList.remove("on");
     const frame=$("#frame"), fallback=$(".video-fallback"), noteEl=$("#playerNote");
     frame.classList.toggle("audio-frame",!!c.embed);
-    fallback.open=false;
+    fallback.open=!!c.channelId;
     let src, original, note;
     const apiParams="&enablejsapi=1"+(/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"");
     if(c.embed){
@@ -333,19 +332,18 @@ function play(k){
     $("#dlg").showModal();iframe.src=src;
     if(!c.embed) youtubeAPI.then(ready=>{
       if(!ready || session!==playerSession || !iframe.isConnected)return;
-      let mutedRetry=false, playing=false;
+      let playing=false;
       try{new YT.Player(iframe,{events:{
-        onReady:e=>{if(session===playerSession)e.target.playVideo()},
+        onReady:e=>{if(session===playerSession){e.target.unMute();e.target.playVideo()}},
         onAutoplayBlocked:e=>{
           if(session!==playerSession)return;
-          if(!mutedRetry){mutedRetry=true;e.target.mute();e.target.playVideo();}
-          else noteEl.textContent="Playback was blocked. Tap play in the video to start.";
+          noteEl.textContent="Tap play in the video to start with sound. Check the speaker control if needed.";
         },
         onStateChange:e=>{
           if(session!==playerSession)return;
-          if(e.data===YT.PlayerState.PLAYING){playing=true;noteEl.textContent=mutedRetry?"Playing muted. Use the player sound control to unmute.":note;}
+          if(e.data===YT.PlayerState.PLAYING){playing=true;noteEl.textContent=note;}
         },
-        onError:()=>{if(session===playerSession)noteEl.textContent="This video may be unavailable here. Try the original source below.";}
+        onError:()=>{if(session===playerSession){noteEl.textContent=c.channelId?"The station may be offline or may not allow playback here. Check its live page below.":"This video may be unavailable here. Try the original source below.";fallback.open=true;}}
       }});
       setTimeout(()=>{if(session===playerSession&&!playing&&!noteEl.textContent)noteEl.textContent="If playback is blocked, tap play in the video."},12000);
       }catch(e){/* The original iframe and source link remain available. */}
