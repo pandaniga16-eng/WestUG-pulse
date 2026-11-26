@@ -179,6 +179,9 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
 @media(min-width:600px){.all-videos{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(min-width:900px){.all-videos{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
+
+/* Continue Watching */
+.cw-shelf>.cw-card{flex:0 0 clamp(132px,38vw,184px);min-width:0;scroll-snap-align:start}.cw-card .po{width:100%}.cw-track{height:4px;background:#464650;border-radius:4px;overflow:hidden;margin-top:8px}.cw-track span{display:block;height:100%;background:var(--y)}.cw-card>small{display:block;color:var(--mute);font-size:11px;margin-top:5px}.cw-remove{font-size:12px;color:var(--y);min-height:40px;text-decoration:underline}.shelf-heading h2{font-size:19px;line-height:1.2}
 </style>
 </head>
 <body>
@@ -309,6 +312,7 @@ CONTENT[0].cover='https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Ishak
 CONTENT[0].coverCredit='B722N';CONTENT[0].coverPage='https://commons.wikimedia.org/wiki/File:Ishaka_town_in_Bushenyi_District_in_Uganda_01.jpg';
 CONTENT[1].cover=EXPLORE[1].img;CONTENT[1].coverCredit=EXPLORE[1].credit;CONTENT[1].coverPage=EXPLORE[1].photo;
 CATS.splice(1,0,'DJ Mixes');
+CATS.push('Trending','Faith','Food','Sports');
 CONTENT.splice(2,0,
  {cat:'DJ Mixes',title:'Konzo Vibes Vol. 31',sub:'Deejay Sam UG × DJ Inno 256 · 25 Nov 2026',hue:200,youtube:'ryJth0Uruks'},
  {cat:'DJ Mixes',title:'Rwanda vs Ankole',sub:'DJ Easy Pro UG · 22 Sep 2026',hue:200,youtube:'8rn3iRL_V6c'},
@@ -323,6 +327,8 @@ CONTENT.splice(CONTENT.findIndex(c=>c.cat==='Music'),0,...[{"cat":"Music","title
 // Official videos with embedding enabled.
 CONTENT.splice(CONTENT.findIndex(c=>c.cat==='Music'),0,...[{"cat": "Music", "title": "No Stress", "sub": "Heli Baibe ft. Ray G · official video", "hue": 205, "youtube": "ucAzPU6VW5k"}, {"cat": "Music", "title": "Maliza", "sub": "Heli Baibe · official video", "hue": 205, "youtube": "Tarw_WpSEwk"}, {"cat": "Music", "title": "Eka", "sub": "Kanyere · official video", "hue": 205, "youtube": "UGq1SWhdPak"}]);
 CONTENT.splice(CONTENT.findIndex(c=>c.cat==='Movies'),0,...[{"cat": "Movies", "title": "The Rat Race", "sub": "XTEND ART FILMZ · Kasese Lhukonzo film", "hue": 200, "youtube": "lS7k7O2lIEY"}]);
+// Recent regional videos and Ugandan food, with creator-enabled embeds.
+CONTENT.push(...[{"cat": "Sports", "title": "Mbarara City vs Lugazi · Highlights", "sub": "Lugazi FC · 19 Nov 2026", "hue": 125, "youtube": "ZE7FSRxgURs"}, {"cat": "Sports", "title": "Rwenzori Marathon winner Leonard Chemonges", "sub": "UBC Television Uganda · 15 Nov 2026", "hue": 125, "youtube": "f7frMBDuZ7A"}, {"cat": "Sports", "title": "Mbarara City vs KCCA · Highlights", "sub": "KCCA FC · 1 Nov 2026", "hue": 125, "youtube": "37SJ9w_obNU"}, {"cat": "Sports", "title": "Mbarara City vs Vipers · Highlights", "sub": "Sanyuka Prime · 29 Oct 2026", "hue": 125, "youtube": "h4V4ArrW4no"}, {"cat": "Faith", "title": "Jackie Bwemi live in Kashari", "sub": "Jackie Bwemi · Mbarara · 18 Oct 2026", "hue": 280, "youtube": "OCT-Q6G2tPw"}, {"cat": "Faith", "title": "Jackie Bwemi live in Kasese", "sub": "Jackie Bwemi · 9 Sep 2026", "hue": 280, "youtube": "vAOiJ5gNkxo"}, {"cat": "Faith", "title": "Yesu Akangirira Embabazi", "sub": "Best Emily · Runyankore hymn · 30 Aug 2026", "hue": 280, "youtube": "FIWeYH0y01U"}, {"cat": "Food", "title": "How to Prepare Eshabwe", "sub": "Step In @NLJosephines Apartments · Ankole dish · Mar 2025", "hue": 35, "youtube": "Q-qz04qgumM"}, {"cat": "Food", "title": "Matooke and Roasted Beef Stew", "sub": "Chef Sasha · Ugandan recipe · Aug 2025", "hue": 35, "youtube": "CA8SNImq91E"}, {"cat": "Food", "title": "Preparing Mugoyo", "sub": "The Iryn train · sweet potatoes and beans · Feb 2024", "hue": 35, "youtube": "v__-p3vlTbQ"}]);
 CONTENT.push({cat:'DJ Mixes',title:'The Tag Team · Taboo Bar & Grill',sub:'DJ KasBaby × Selecta Jeff · live DJ set',hue:200,youtube:'Mf-Do7B5Uwk'});
 CONTENT.push({cat:'DJ Mixes',title:'Africa In Hand Part 17',sub:'DJ Ben Kilade & MC Bry P · Southcom Radio',hue:200,youtube:'ZmWI6a0aZGg'});
 const CHANNELS=[{"name":"TV West","color":"#e53935","hls":"https://stream.hydeinnovations.com/tvwest-flussonic/index.m3u8","channelId":"UCL8O1K8TK81uv75Fd6i6sJw","liveUrl":"https://www.youtube.com/@TVWestUganda/live","note":"Live TV · plays here","logo":"https://yt3.googleusercontent.com/ytc/AIdro_lJbo_CiFIe83QxKYzhzZseVpVFej006pCBy0ba6PaLCyw=s900-c-k-c0x00ffffff-no-rj","cover":"https://yt3.googleusercontent.com/jFs7GkP7GYj6ym4M9tmSVhiXAjzz2cb1L9lgyttFwtHhUKkBt9_EORKqdyuI0iLlJBMTeC9R=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj","siteUrl":"https://www.tvwest.co.ug/"},{"name":"Rwenzori TV","color":"#e53935","channelId":"UCdJf0rkpyi2hsgWzop4GRxA","liveUrl":"https://www.youtube.com/@RWENZORITV/live","note":"Live when the station is broadcasting","logo":"https://yt3.googleusercontent.com/E7XrrIyH02rIDQcTRWMvOYG1NbDnBG2VBXBvGgFuCsQgQYfaViRhKSVdAC2ymbnWol4N1V-DZA=s900-c-k-c0x00ffffff-no-rj","cover":"https://yt3.googleusercontent.com/fQX6oC1hARg6VJb4sJVR8VWtySOEu1i7G8V3qiN4ubf_d3HCmRBEML1VnTp8tD_PG6_nkDRaGw=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj","siteUrl":"https://rwenzoritv.com/live/"},{"name":"UBC Television","color":"#17589d","channelId":"UCvTflPL_YBQdrHcKFI5xdYg","liveUrl":"https://www.youtube.com/@ubctvuganda/live","note":"Live when the station is broadcasting","logo":"https://ubc.go.ug/wp-content/uploads/2023/10/UBC.png"}];
@@ -383,19 +389,22 @@ const channelCard=(c,i)=>c.url&&!playable(c)
 const radioCard=(c,i)=>`<button class="radio-card" data-p="r${i}" aria-label="Play ${c.name}">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Tap to listen here</small></span>${svg(P.play,22)}</button>`;
 const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.youtube?"":c.title.charAt(0)}</div>`;
 
+// Trending is an editorial selection of recent regional videos, not a measured ranking.
+const TRENDING_IDS=['ZE7FSRxgURs','f7frMBDuZ7A','37SJ9w_obNU','OCT-Q6G2tPw','h4V4ArrW4no'];
+const inVideoCategory=(c,name)=>name==='Trending'?TRENDING_IDS.includes(c.youtube):c.cat===name;
 const VIDEO_PAGE_SIZE=20;
 function videoGrid(){
-  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
+  const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>inVideoCategory(c,cat)&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
   const current=videoExpanded?items:items.slice(0,VIDEO_PAGE_SIZE);
-  const heading=`<div class="shelf-heading" id="category-heading"><h3>${cat}</h3><span>${videoExpanded?items.length+' videos':'Swipe to explore'}</span></div>`;
+  const heading=`<div class="shelf-heading" id="category-heading"><h3>${cat}</h3><span>${cat==='Trending'?'Recent regional picks':videoExpanded?items.length+' videos':'Swipe to explore'}</span></div>`;
   return `${heading}<div class="${videoExpanded?'all-videos':'content-shelf'}" aria-label="${cat} videos">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${videoExpanded||current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="${videoExpanded?'Show fewer':'Show all'} videos in ${cat}">${videoExpanded?'Show less':'Show all '+cat}</button></div>`:""}`;
 }
 function moreCategoryShelves(){
   return CATS.filter(name=>name!==cat).map(name=>{
-    const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===name&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
+    const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>inVideoCategory(c,name)&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
     if(!items.length)return '';
-    return `<section class="category-shelf"><div class="shelf-heading"><h3>${name}</h3><button data-c="${name}" aria-label="See all ${name}">See all ›</button></div><div class="content-shelf" aria-label="${name} videos">${items.slice(0,12).map(({c,i})=>poster(c,'c'+i)).join('')}</div></section>`;
+    return `<section class="category-shelf"><div class="shelf-heading"><h3>${name}</h3>${name==='Trending'?'<span>Recent regional picks</span>':''}<button data-c="${name}" aria-label="See all ${name}">See all ›</button></div><div class="content-shelf" aria-label="${name} videos">${items.slice(0,12).map(({c,i})=>poster(c,'c'+i)).join('')}</div></section>`;
   }).join('');
 }
 const EXPLORE_VIDEOS=[
@@ -409,8 +418,67 @@ const EXPLORE_VIDEOS=[
 EXPLORE_VIDEOS.forEach(c=>{c.note="Video by "+c.creator+" · YouTube"});
 SRC.e=EXPLORE_VIDEOS;
 const exploreYoutube=(c,i)=>`<article class="explore-card"><button class="po" data-p="e${i}" aria-label="Play ${c.title}"><div class="pi explore-cover" style="background:linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover"><span class="youtube-badge"><svg viewBox="0 0 28 20" width="22" height="16" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#f00"/><path d="M11 5.5v9l8-4.5z" fill="white"/></svg> YouTube</span>${c.title}</div><small>Video: ${c.creator}</small></button></article>`;
+// Continue Watching: only recorded, seekable video; never a view-history placeholder.
+const CW_KEY='westpulse.continue.v1', CW_LIMIT=30;
+let cwActive=null;
+function cwRead(){
+  try { const x=JSON.parse(localStorage.getItem(CW_KEY)||'[]'); return Array.isArray(x)?x.filter(r=>r && typeof r.id==='string' && Number.isFinite(r.time) && Number.isFinite(r.duration) && Number.isFinite(r.updated) && r.time>=5 && r.duration>0 && r.time/r.duration<0.95).slice(0,CW_LIMIT):[]; } catch(e){return []}
+}
+function cwWrite(rows){try{localStorage.setItem(CW_KEY,JSON.stringify(rows.slice(0,CW_LIMIT)));return true}catch(e){return false}}
+function cwId(k,c){
+  if(!['c','a','p','e'].includes(k[0]) || c.hls || c.channelId || c.frame || c.social || c.embed || c.external)return '';
+  if(c.video)return 'video:'+c.video;
+  if(c.youtube)return 'youtube:'+c.youtube;
+  return '';
+}
+function cwRecord(id,time,duration){
+  if(!id||!Number.isFinite(time)||!Number.isFinite(duration)||duration<=0)return;
+  const rows=cwRead().filter(r=>r.id!==id);
+  if(time/duration>=0.95){cwWrite(rows);return}
+  if(time>=5)cwWrite([{id,time,duration,updated:Date.now()},...rows]);
+  else cwWrite(rows);
+}
+function cwRemove(id){cwWrite(cwRead().filter(r=>r.id!==id))}
+function cwResolve(id){
+  for(const type of ['c','a','p','e']){
+    const arr=SRC[type]||[];
+    for(let i=0;i<arr.length;i++){const k=type+i;if(cwId(k,arr[i])===id)return {k,c:arr[i]}}
+  }
+  return null;
+}
+function cwShelf(){
+  const rows=cwRead().sort((a,b)=>b.updated-a.updated).map(r=>({r,item:cwResolve(r.id)})).filter(x=>x.item);
+  if(!rows.length)return '';
+  return `<section aria-label="Continue watching"><div class="shelf-heading"><h2>Continue Watching</h2><span>Saved on this device</span></div><div class="content-shelf cw-shelf">${rows.map(({r,item})=>`<div class="cw-card">${poster(item.c,item.k)}<div class="cw-track" role="progressbar" aria-label="Playback progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.floor(100*r.time/r.duration)}"><span style="width:${Math.floor(100*r.time/r.duration)}%"></span></div><small>${Math.floor(r.time/60)}:${String(Math.floor(r.time%60)).padStart(2,'0')} watched</small><button class="cw-remove" data-cw-remove="${encodeURIComponent(r.id)}" aria-label="Remove from Continue Watching">Remove</button></div>`).join('')}</div></section>`;
+}
+function cwRefresh(){const el=document.querySelector('#cw-shelf');if(el)el.innerHTML=cwShelf()}
+function cwStop(){if(cwActive){const active=cwActive;cwActive=null;active.stop()}}
+function cwVideo(id,video,session){
+  if(!id)return;
+  const saved=cwRead().find(r=>r.id===id);let played=false, restored=!saved;
+  const restore=()=>{if(restored||session!==playerSession)return;try{if(video.seekable.length && saved.time<video.duration*0.95){video.currentTime=saved.time;restored=true}}catch(e){}};
+  const save=()=>{if(session!==playerSession||!played||!restored||!video.seekable.length)return;cwRecord(id,video.currentTime,video.duration)};
+  video.addEventListener('loadedmetadata',restore);video.addEventListener('canplay',restore);
+  video.addEventListener('playing',()=>{played=true;restore()});
+  video.addEventListener('pause',save);video.addEventListener('seeked',save);
+  video.addEventListener('ended',()=>{if(session===playerSession)cwRemove(id)});
+  const timer=setInterval(save,2000);cwActive={flush:save,stop(){save();clearInterval(timer)}};
+}
+function cwYoutube(id,session){
+  if(!id)return null;
+  const saved=cwRead().find(r=>r.id===id);let player=null,played=false,restored=!saved;
+  const save=()=>{try{if(session!==playerSession||!played||!restored||!player)return;const d=player.getVideoData&&player.getVideoData();if(d&&d.isLive)return;cwRecord(id,player.getCurrentTime(),player.getDuration())}catch(e){}};
+  const timer=setInterval(save,2000);
+  const obj={saved,ready(p){player=p;if(saved){try{p.seekTo(saved.time,true);restored=true}catch(e){}}},state(e){if(e.data===YT.PlayerState.PLAYING)played=true;else if(e.data===YT.PlayerState.ENDED){played=false;cwRemove(id)}else if(e.data===YT.PlayerState.PAUSED)save()},error(code){if([100,101,150].includes(code)){played=false;cwRemove(id)}},flush:save,stop(){save();clearInterval(timer)}};
+  cwActive=obj;return obj;
+}
+window.addEventListener('pagehide',()=>{if(cwActive)cwActive.flush()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&cwActive)cwActive.flush()});
+window.addEventListener('storage',e=>{if(e.key===CW_KEY)cwRefresh()});
+
 const VIEWS={
  home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">View details</span></button>`).join("")}</div>
+  <div id="cw-shelf">${cwShelf()}</div>
   <h2 class="sec">This week · 23–27 November 2026</h2>
   <div class="news-list">
    <details class="news-card"><summary><img class="news-poster" src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Bamba_cultural_group.jpg" alt="Bamba cultural group in Kasese District" loading="lazy"><strong>Kasese: supporting local languages and cultural identity</strong><small>Kasese Guide Radio · 26 Nov 2026</small></summary><p>At a kindergarten graduation in Kasese, children’s mentor Specioza Katsetsere encouraged parents to support local languages and cultural identity. She said this can help children communicate with relatives in their communities.</p><a href="https://kaseseguideradio.com/parents-urged-to-protect-cultural-identity-local-language-among-children/" target="_blank" rel="noopener noreferrer">Read the original report · Kasese Guide Radio</a></details>
@@ -556,6 +624,7 @@ function play(k){
   const c=SRC[k[0]]&&SRC[k[0]][+k.slice(1)];
   if(!c)return;
   if(k[0]==="b"){openEvent(c);return}
+  cwStop();
   if(playable(c))preparePlayer(k,c);
   // The selected four live stations have no external fallback link, even on error.
   const existingLink=$("#youtubeLink");
@@ -598,6 +667,7 @@ function play(k){
     note.className="player-note player-credit";note.replaceChildren(document.createTextNode("Silent footage · "+c.title+" by "+c.creator+" · converted to MP4. "));
     const source=document.createElement("a");source.href=c.source;source.target="_blank";source.rel="noopener noreferrer";source.textContent="Original";note.append(source,document.createTextNode(" · "));
     const license=document.createElement("a");license.href="https://creativecommons.org/licenses/by-sa/4.0/";license.target="_blank";license.rel="noopener noreferrer";license.textContent="CC BY-SA 4.0";note.append(license);
+    cwVideo(cwId(k,c),video,session);
     video.addEventListener("error",()=>{if(session===playerSession)note.prepend(document.createTextNode("Video unavailable right now. "))});
     openPlayer();video.play().catch(()=>{if(session===playerSession)note.prepend(document.createTextNode("Tap play in the video to start. "))});return;
   }
@@ -618,7 +688,7 @@ function play(k){
     }else if(c.frame){
       src=c.frame;original=c.url;note=c.fallbackClosed?"Tap play in the video to start.":"Tap play on the station page. If it doesn't load here, use the link below.";
     }else{
-      src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0&loop=1&playlist="+encodeURIComponent(c.youtube)+apiParams;
+      src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0"+apiParams;
       original="https://www.youtube.com/watch?v="+encodeURIComponent(c.youtube);note=c.note||"";
     }
     const iframe=document.createElement("iframe");
@@ -626,21 +696,24 @@ function play(k){
     iframe.allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
     iframe.referrerPolicy="strict-origin-when-cross-origin";iframe.allowFullscreen=true;
     frame.replaceChildren(iframe);noteEl.textContent=note;if(!c.noOfficialLink)$("#youtubeLink").href=original;
+    const cw=cwYoutube(cwId(k,c),session);
+    if(cw&&cw.saved)src+="&start="+Math.floor(cw.saved.time);
     openPlayer();iframe.src=src;
     if(!c.embed && !c.social && !c.frame) youtubeAPI.then(ready=>{
       if(!ready || session!==playerSession || !iframe.isConnected)return;
       let playing=false;
       try{new YT.Player(iframe,{events:{
-        onReady:e=>{if(session===playerSession){e.target.unMute();e.target.playVideo()}},
+        onReady:e=>{if(session===playerSession){if(cw)cw.ready(e.target);e.target.unMute();e.target.playVideo()}},
         onAutoplayBlocked:e=>{
           if(session!==playerSession)return;
           noteEl.textContent="Tap play in the video to start with sound. Check the speaker control if needed.";
         },
         onStateChange:e=>{
           if(session!==playerSession)return;
+          if(cw)cw.state(e);
           if(e.data===YT.PlayerState.PLAYING){playing=true;noteEl.textContent=note;}
         },
-        onError:()=>{if(session===playerSession){noteEl.textContent=c.channelId?"The station may be offline or may not allow playback here. Check its live page below.":"This video may be unavailable here. Try the original source below.";fallback.open=true;}}
+        onError:e=>{if(session===playerSession){if(cw)cw.error(e.data);noteEl.textContent=c.channelId?"The station may be offline or may not allow playback here. Check its live page below.":"This video may be unavailable here. Try the original source below.";fallback.open=true;}}
       }});
       setTimeout(()=>{if(session===playerSession&&!playing&&!noteEl.textContent)noteEl.textContent="If playback is blocked, tap play in the video."},12000);
       }catch(e){/* The original iframe and source link remain available. */}
@@ -653,7 +726,7 @@ function play(k){
     $("#dt").textContent=c.title;$("#ds").textContent=c.sub||"";$("#dock").classList.add("on");
   }else toast(k[0]==="h"?"Stream not available yet":"This video is not available yet");
 }
-const closeVideo=()=>{playerSession++;killHls();$("#dlg").close();$("#frame").innerHTML=""};
+const closeVideo=()=>{cwStop();playerSession++;killHls();$("#dlg").close();$("#frame").innerHTML="";cwRefresh()};
 
 /* chrome */
 $("nav").innerHTML=Object.keys(TITLES).map(v=>`<button data-v="${v}">${svg(P[v])}<span>${TITLES[v]}</span></button>`).join("");
@@ -663,7 +736,8 @@ $("#me").innerHTML=svg(P.user,24);
 document.addEventListener("click",e=>{
   const t=e.target,g=s=>t.closest(s);
   let n;
-  if(n=g("[data-short-play]")){startShort(n)}
+  if(n=g("[data-cw-remove]")){try{cwRemove(decodeURIComponent(n.dataset.cwRemove));cwRefresh()}catch(e){}}
+  else if(n=g("[data-short-play]")){startShort(n)}
   else if(n=g("[data-short-move]")){const section=n.closest(".sh"),next=n.dataset.shortMove==="1"?section.nextElementSibling:section.previousElementSibling;if(next)next.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
   else if(n=g("[data-radio]")){view="more";sub="radio";q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-v]")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
@@ -682,7 +756,7 @@ document.addEventListener("click",e=>{
 });
 $("#q").addEventListener("input",e=>{q=e.target.value.trim();render()});
 $("#x").addEventListener("click",closeVideo);
-$("#dlg").addEventListener("cancel",()=>{playerSession++;killHls();$("#frame").innerHTML=""});
+$("#dlg").addEventListener("cancel",()=>{cwStop();playerSession++;killHls();$("#frame").innerHTML="";cwRefresh()});
 render();
 </script>
 </body>
