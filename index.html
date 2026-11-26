@@ -250,7 +250,7 @@ const VIEWS={
   sub==="archive"?TV_ARCHIVE.map((c,i)=>rowItem("a"+i,thumb(c),c.title,c.sub)).join("")
   :sub==="pod"?`<p class="pod-intro">Podcasts &amp; interviews from Western Uganda and beyond. Tap an episode to play it here when available.</p>`+PODCASTS.map((c,i)=>rowItem("p"+i,thumb(c),c.title,c.sub)).join("")
   :`<div class="about-page"><h2>About WEST PULSE UG</h2><p>WEST PULSE UG brings Western Uganda’s music, entertainment, conversations and TV together in one place.</p><p>Explore music, films, Shorts, podcasts and interviews, plus TV West, Rwenzori TV and UBC Television. Visit the TV archive for recorded programmes and the TV Guide for station updates.</p><p>Videos and other media are provided by their original creators and stations. Availability and live broadcasts depend on the source. If a player cannot start, open the help in the player for the original source.</p></div>`}</div>`,
- shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${s.youtube?`linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.15) 70%),url(https://i.ytimg.com/vi/${s.youtube}/hqdefault.jpg) center/cover`:grad(s.hue)}"><button class="big" data-short-play="${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><div class="short-frame" hidden></div><div class="short-nav"><button data-short-move="-1" aria-label="Previous short" ${i===0?"disabled":""}>↑</button><button data-short-move="1" aria-label="Next short" ${i===SHORTS.length-1?"disabled":""}>↓</button></div><span class="short-tip">Swipe up for more</span><p>${s.caption}</p><div class="who"><i></i>${s.author}</div><div class="short-source">YouTube · <a href="https://www.youtube.com/watch?v=${encodeURIComponent(s.youtube)}" target="_blank" rel="noopener noreferrer">Open original if playback fails</a><span class="short-status"> · Starts muted, use the player for sound</span></div>
+ shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${s.youtube?`linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.15) 70%),url(https://i.ytimg.com/vi/${s.youtube}/hqdefault.jpg) center/cover`:grad(s.hue)}"><button class="big" data-short-play="${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><div class="short-frame" hidden></div><div class="short-nav"><button data-short-move="-1" aria-label="Previous short" ${i===0?"disabled":""}>↑</button><button data-short-move="1" aria-label="Next short" ${i===SHORTS.length-1?"disabled":""}>↓</button></div><span class="short-tip">Swipe up for more</span><p>${s.caption}</p><div class="who"><i></i>${s.author}</div><div class="short-source">YouTube · <a href="https://www.youtube.com/watch?v=${encodeURIComponent(s.youtube)}" target="_blank" rel="noopener noreferrer">Open original if playback fails</a><span class="short-status"> · If autoplay is blocked, tap play</span></div>
   <div class="act"><button data-a="like" aria-pressed="false" aria-label="Like">${svg(P.up,34)}</button><button data-a="dis" aria-pressed="false" aria-label="Dislike" style="transform:scaleY(-1)">${svg(P.up,34)}</button><button data-a="add" aria-label="Add to my list">${svg(P.plus,38)}</button><button data-a="share" aria-label="Share">${svg(P.share,34)}</button></div></section>`).join("")}</div>`
 };
 
@@ -283,14 +283,13 @@ function startShort(button,automatic=false){
   iframe.allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
   iframe.allowFullscreen=true;iframe.referrerPolicy="strict-origin-when-cross-origin";
   frame.replaceChildren(iframe);frame.hidden=false;button.hidden=true;
-  const status=section.querySelector(".short-status");status.textContent=automatic?" · Starts muted, use the player for sound":" · Tap play in the player if needed";
-  iframe.src="https://www.youtube-nocookie.com/embed/"+id+"?autoplay=1&playsinline=1&rel=0&loop=1&playlist="+id+(automatic?"&mute=1":"")+"&enablejsapi=1"+(/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"");
+  const status=section.querySelector(".short-status");status.textContent=" · If autoplay is blocked, tap play";
+  iframe.src="https://www.youtube-nocookie.com/embed/"+id+"?autoplay=1&playsinline=1&rel=0&loop=1&playlist="+id+"&enablejsapi=1"+(/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"");
   youtubeAPI.then(ready=>{
     if(!ready||!iframe.isConnected)return;
-    let mutedRetry=false;
     try{new YT.Player(iframe,{events:{
-      onReady:e=>{if(iframe.isConnected)e.target.playVideo()},
-      onAutoplayBlocked:e=>{if(!iframe.isConnected)return;if(!automatic&&!mutedRetry){mutedRetry=true;e.target.mute();e.target.playVideo();status.textContent=" · Muted: use the player for sound"}else status.textContent=" · Autoplay blocked. Tap play in the player"},
+      onReady:e=>{if(iframe.isConnected){e.target.unMute();e.target.playVideo()}},
+      onAutoplayBlocked:()=>{if(iframe.isConnected)status.textContent=" · Autoplay with sound blocked. Tap play in the player"},
       onError:e=>{if(iframe.isConnected)status.textContent=(e.data===101||e.data===150)?" · Embedding unavailable. Open the original":e.data===100?" · Video unavailable. Open the original":" · Playback unavailable here. Open the original"}
     }});}catch(e){/* Keep the standard player and original link available. */}
   });
