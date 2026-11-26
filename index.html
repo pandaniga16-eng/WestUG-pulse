@@ -29,6 +29,8 @@ header h1{font-size:30px;font-weight:600;margin-right:auto}
 #sbar input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:11px 18px;font:inherit}
 #view{flex:1;min-height:0;overflow-y:auto;padding:4px 0 24px;-webkit-overflow-scrolling:touch}
 .sec{font-size:26px;font-weight:600;padding:0 20px;margin:26px 0 14px}
+.social-link{display:flex;align-items:center;min-height:44px;margin:0 20px 8px;color:var(--y);font-size:14px;font-weight:600;text-decoration:none}
+.social-link:hover{text-decoration:underline}
 .banners{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px;scrollbar-width:none}
 .banners::-webkit-scrollbar,.row::-webkit-scrollbar,.pills::-webkit-scrollbar{display:none}
 .bn{flex:0 0 92%;scroll-snap-align:center;aspect-ratio:16/9;border-radius:18px;padding:18px;display:flex;flex-direction:column;justify-content:center;gap:10px;border:1px solid var(--line)}
@@ -347,7 +349,7 @@ EXPLORE_VIDEOS.forEach(c=>{c.note="Video by "+c.creator+" · YouTube"});
 SRC.e=EXPLORE_VIDEOS;
 const exploreYoutube=(c,i)=>`<article class="explore-card"><button class="po" data-p="e${i}" aria-label="Play ${c.title}"><div class="pi explore-cover" style="background:linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover"><span class="youtube-badge"><svg viewBox="0 0 28 20" width="22" height="16" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#f00"/><path d="M11 5.5v9l8-4.5z" fill="white"/></svg> YouTube</span>${c.title}</div><small>Video: ${c.creator}</small></button></article>`;
 const VIEWS={
- home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span><small class="banner-credit">${b.credit||""}</small></button>`).join("")}</div>
+ home:()=>`<a class="social-link" href="https://www.tiktok.com/@west.pulse.ug" target="_blank" rel="noopener noreferrer">Follow WEST PULSE UG on TikTok ↗</a><div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span><small class="banner-credit">${b.credit||""}</small></button>`).join("")}</div>
   <h2 class="sec">Explore Western Uganda</h2><div class="row feature-grid">${CONTENT.slice(0,2).map((c,i)=>`<article class="explore-card">${poster(c,"c"+i)}<small class="photo-credit">Cover: <a href="${c.coverPage}" target="_blank" rel="noopener noreferrer">${c.coverCredit}</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></small></article>`).join("")}${EXPLORE_VIDEOS.map(exploreYoutube).join("")}</div>
   <h2 class="sec">Western DJ mixes</h2><div class="row feature-grid">${CONTENT.slice(2,8).map((c,i)=>poster(c,"c"+(i+2))).join("")}</div>
   <h2 class="sec">More DJ mixes</h2><div class="row feature-grid">${CONTENT.slice(-2).map((c,i)=>poster(c,"c"+(CONTENT.length-2+i))).join("")}</div>
