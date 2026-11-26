@@ -85,6 +85,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 #toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#fff;color:#111;padding:10px 18px;border-radius:99px;display:none;z-index:9;max-width:90vw;text-align:center;font-size:14px}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 .guide-wrap,.about-page{padding:14px 18px 28px;line-height:1.5}.guide-wrap h2,.about-page h2{margin:4px 0 10px}.guide-wrap p,.about-page p,.pod-intro{color:var(--mute);font-size:14px;line-height:1.55}.guide-card{background:#202020;border:1px solid var(--line);border-radius:14px;padding:15px;margin:14px 0}.guide-card h3{margin:0}.guide-card a{display:inline-block;color:var(--y);font-weight:600;margin:4px 16px 4px 0}.pod-intro{padding:12px 16px;margin:0}.station-links{display:flex;flex-wrap:wrap;gap:8px 14px;padding:8px 4px 4px}.station-links a{color:var(--y);font-size:13px;font-weight:600;text-decoration:underline}.station{min-width:0}.channel-card{text-align:left;cursor:pointer}.guide-programmes{list-style:none;margin:10px 0 0;padding:0}.guide-programmes li{padding:11px 0;border-top:1px solid var(--line)}.guide-programmes strong{display:block;font-size:15px}.guide-programmes small{display:block;color:var(--mute);font-size:13px;margin-top:2px}.guide-card .guide-watch{width:100%;border:1px solid var(--line);background:#2b2b2b;color:var(--y);padding:10px 12px;border-radius:10px;text-align:left;font-weight:600;cursor:pointer;margin-top:10px}.short-frame{position:absolute;top:8px;bottom:150px;left:8px;right:68px;min-width:min(200px,calc(100% - 16px));min-height:200px;background:#000;border-radius:12px;overflow:hidden}.short-frame[hidden]{display:none}.short-frame iframe{width:100%;height:100%;border:0}.short-nav{position:absolute;right:12px;top:14px;z-index:2;display:flex;flex-direction:column;gap:8px}.short-nav button{width:42px;height:42px;border-radius:50%;background:#000b;color:#fff;text-align:center;font-size:23px}.short-nav button:disabled{opacity:.35;cursor:default}.short-tip{position:absolute;right:10px;top:112px;width:54px;color:#fff;font-size:10px;text-align:center;text-shadow:0 1px 5px #000}.short-source{position:relative;z-index:2;font-size:12px;color:#eee;margin:0 60px 3px 0}.short-source a{color:#fff;text-decoration:underline}.sh .prog{display:none}.explore-note{color:var(--mute);font-size:12px;margin:8px 20px 0}.explore-video{min-width:0}.explore-video video,.explore-video iframe{display:block;width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:10px;background:#181818}.explore-video strong{display:block;font-size:13px;line-height:1.25;margin-top:6px}.explore-video small{display:block;font-size:10px;line-height:1.35;color:var(--mute);margin-top:4px}.explore-video a{color:#ddd;text-decoration:underline}
+.subtabs{gap:clamp(12px,4vw,28px);overflow-x:auto}.st{white-space:nowrap}.channel-card:is(a){text-decoration:none;color:inherit}.radio-list{padding:0 18px 24px}.radio-list p{color:var(--mute);font-size:14px;line-height:1.5}.radio-card{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}.radio-card .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px}.radio-card span{flex:1;min-width:0}.radio-card strong,.radio-card small{display:block}.radio-card small{color:var(--mute);margin-top:3px}.radio-card small:last-child{color:var(--y)}
 .explore-cover{position:relative}.youtube-badge{position:absolute;top:8px;left:8px;display:flex;gap:4px;align-items:center;padding:4px 6px;border-radius:7px;background:rgba(0,0,0,.8);font:700 11px Arial,sans-serif;color:white;text-shadow:none}.youtube-badge svg{flex:none}
 </style>
 </head>
@@ -227,7 +228,19 @@ const PODCASTS=[{"title":"The Banyankole culture chat with Itungo","sub":"Lynett
 /* =========================================================== */
 
 const $=s=>document.querySelector(s);
-const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS,a:TV_ARCHIVE};
+// Use station-owned pages rather than embedding their streams without permission.
+CHANNELS.push(
+ {name:"NTV Uganda",color:"#b31b1b",note:"Watch on NTV Uganda’s official live page",url:"https://ntv.co.ug/live-tv"},
+ {name:"Spark TV",color:"#db246d",note:"Watch on Spark TV’s official live page",url:"https://ntv.co.ug/spark-live-tv-2"}
+);
+const RADIO=[
+ {name:"Messiah Radio",color:"#982721",note:"Kasese · official listening page",url:"https://messiahradio.co.ug/live/"},
+ {name:"Kasese Guide Radio",color:"#30618d",note:"Kasese · official listening page",url:"https://live.kaseseguideradio.com/"},
+ {name:"Vision Radio 89.1 FM",color:"#714a9c",note:"Mbarara · official station page",url:"https://www.visionradio891.com/"},
+ {name:"Glory FM 106.7",color:"#a56a16",note:"Mbarara · official listening page",url:"https://gloryfm.live/"},
+ {name:"Messenger FM",color:"#b04644",note:"Mbarara · official listening page",url:"https://messengerfm.com/"}
+];
+const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS,a:TV_ARCHIVE,r:RADIO};
 const svg=(p,s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const P={
  home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',
@@ -251,7 +264,10 @@ const poster=(c,k)=>`<button class="po" data-p="${k}"><div class="pi" style="bac
 const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span class="n">${name}${sub2?`<small>${sub2}</small>`:""}</span>${svg(P.chev,22)}</button>`;
 const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
-const channelCard=(c,i)=>`<div class="station"><button class="channel-card" data-p="h${i}" aria-label="Watch ${c.name} here">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Tap to watch here</small></span></span></button></div>`;
+const channelCard=(c,i)=>c.url
+ ?`<div class="station"><a class="channel-card" href="${c.url}" target="_blank" rel="noopener noreferrer" aria-label="Watch ${c.name} on its official page (opens a new tab)"><span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Open official live page ↗</small></span></span></a></div>`
+ :`<div class="station"><button class="channel-card" data-p="h${i}" aria-label="Watch ${c.name} here">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Tap to watch here</small></span></span></button></div>`;
+const radioCard=c=>`<a class="radio-card" href="${c.url}" target="_blank" rel="noopener noreferrer" aria-label="Open ${c.name} official page (opens a new tab)">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Open station page ↗</small></span>${svg(P.chev,22)}</a>`;
 const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.youtube?"":c.title.charAt(0)}</div>`;
 
 const VIDEO_PAGE_SIZE=20;
@@ -279,14 +295,15 @@ const VIEWS={
   <h2 class="sec">Entertainment</h2>
   <div class="pills">${CATS.map(c=>`<button class="pill${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("")}</div>
   ${videoGrid()}
-  <button class="feature" data-v="channels"><span>WEST PULSE UG<br>TV<small>Recorded TV & channels</small></span></button>`,
- channels:()=>`<div class="channel-list">${CHANNELS.length?CHANNELS.map(channelCard).join(""):`<p class="empty">No verified live streams available yet. Find recorded shows in More → TV archive.</p>`}</div>`,
+  <button class="feature" data-v="channels"><span>WEST PULSE UG<br>TV<small>Recorded TV & channels</small></span></button><button class="feature" data-radio><span>WEST PULSE UG<br>RADIO<small>Listen on station pages</small></span></button>`,
+ channels:()=>`<div class="channel-list">${CHANNELS.length?CHANNELS.map(channelCard).join(""):`<p class="empty">No verified live streams available yet. Find recorded shows in More → TV archive.</p>`}<button class="feature" data-radio><span>RADIO<small>Listen on station pages</small></span></button></div>`,
  guide:()=>`<div class="guide-wrap"><h2>TV Guide</h2><p>Explore programmes from each station here. Broadcast days and times have not been confirmed, and programmes may change.</p>
  <section class="guide-card"><h3>TV West</h3><ul class="guide-programmes"><li><strong>Sisimuka</strong><small>TV West programme</small></li><li><strong>Omushongi</strong><small>Lunch-time request show</small></li><li><strong>Omubabiro</strong><small>TV West programme</small></li><li><strong>Omuneneserezo</strong><small>Contemporary music</small></li><li><strong>Agacencwire</strong><small>News</small></li><li><strong>Age’ihangwe</strong><small>National news</small></li><li><strong>Ankole Actors</strong><small>Local comedy</small></li><li><strong>Tuhanuure</strong><small>Talk show</small></li></ul><button class="guide-watch" data-p="a0">▶ Watch an Agacencwire recording here</button></section>
  <section class="guide-card"><h3>Rwenzori TV</h3><ul class="guide-programmes"><li><strong>Bwakere Rwenzori</strong><small>Rwenzori TV programme</small></li><li><strong>Corridors of Power</strong><small>Rwenzori TV programme</small></li></ul><button class="guide-watch" data-p="a6">▶ Watch a Bwakere Rwenzori recording here</button></section>
  <section class="guide-card"><h3>UBC Television</h3><ul class="guide-programmes"><li><strong>Good Morning Uganda</strong><small>Morning news and discussion</small></li><li><strong>Good Morning Uganda Extra</strong><small>Interviews and discussion</small></li><li><strong>UBC News Tonight</strong><small>News bulletin</small></li><li><strong>UBC Leero</strong><small>Luganda news</small></li><li><strong>Buuza Kamisona</strong><small>Tax education</small></li></ul></section><h3>Watch recorded TV</h3><p>Catch up on recordings from the archive.</p><div class="list">${[0,1,4,6].map(i=>rowItem('a'+i,thumb(TV_ARCHIVE[i]),TV_ARCHIVE[i].title,TV_ARCHIVE[i].sub)).join('')}</div></div>`,
- more:()=>`<div class="subtabs">${[["archive","TV archive"],["pod","Podcasts"],["about","About"]].map(t=>`<button class="st${sub===t[0]?" on":""}" data-st="${t[0]}">${t[1]}</button>`).join("")}</div><div class="list">${
+ more:()=>`<div class="subtabs">${[["archive","TV archive"],["radio","Radio"],["pod","Podcasts"],["about","About"]].map(t=>`<button class="st${sub===t[0]?" on":""}" data-st="${t[0]}">${t[1]}</button>`).join("")}</div><div class="list">${
   sub==="archive"?TV_ARCHIVE.map((c,i)=>rowItem("a"+i,thumb(c),c.title,c.sub)).join("")
+  :sub==="radio"?`<section class="radio-list"><h2>Radio</h2><p>Listen on the stations’ own pages. Streams may be unavailable or require you to press play there.</p>${RADIO.map(radioCard).join("")}</section>`
   :sub==="pod"?`<p class="pod-intro">Podcasts &amp; interviews from Western Uganda and beyond. Tap an episode to play it here when available.</p>`+PODCASTS.map((c,i)=>rowItem("p"+i,thumb(c),c.title,c.sub)).join("")
   :`<div class="about-page"><h2>About WEST PULSE UG</h2><p>WEST PULSE UG brings Western Uganda’s music, entertainment, conversations and TV together in one place.</p><p>Explore music, films, Shorts, podcasts and interviews, plus TV West, Rwenzori TV and UBC Television. Visit the TV archive for recorded programmes and the TV Guide for station updates.</p><p>Videos and other media are provided by their original creators and stations. Availability and live broadcasts depend on the source. If a player cannot start, open the help in the player for the original source.</p></div>`}</div>`,
  shorts:()=>`<div class="shorts">${SHORTS.map((s,i)=>`<section class="sh" style="background:${s.youtube?`linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.15) 70%),url(https://i.ytimg.com/vi/${s.youtube}/hqdefault.jpg) center/cover`:grad(s.hue)}"><button class="big" data-short-play="${i}" aria-label="Play short"><i>${svg(P.play,40)}</i></button><div class="short-frame" hidden></div><div class="short-nav"><button data-short-move="-1" aria-label="Previous short" ${i===0?"disabled":""}>↑</button><button data-short-move="1" aria-label="Next short" ${i===SHORTS.length-1?"disabled":""}>↓</button></div><span class="short-tip">Swipe up for more</span><p>${s.caption}</p><div class="who"><i></i>${s.author}</div><div class="short-source">YouTube · <a href="https://www.youtube.com/watch?v=${encodeURIComponent(s.youtube)}" target="_blank" rel="noopener noreferrer">Open original if playback fails</a><span class="short-status"> · If autoplay is blocked, tap play</span></div>
@@ -295,7 +312,7 @@ const VIEWS={
 
 function results(){
   const t=q.toLowerCase();
-  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social)?["c"+i,thumb(c),c.title,c.cat,c.title]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,"Channel",c.name]),...RADIO.map((c,i)=>["r"+i,chLogo(c),c.name,"Radio · opens station page",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
   return hit.length?`<div class="list">${hit.map(x=>rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
@@ -420,6 +437,7 @@ document.addEventListener("click",e=>{
   let n;
   if(n=g("[data-short-play]")){startShort(n)}
   else if(n=g("[data-short-move]")){const section=n.closest(".sh"),next=n.dataset.shortMove==="1"?section.nextElementSibling:section.previousElementSibling;if(next)next.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
+  else if(n=g("[data-radio]")){view="more";sub="radio";q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-v]")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-c]")){cat=n.dataset.c;videoPage=0;render()}
   else if(n=g("[data-video-more]")){const top=$("#view").scrollTop;videoPage++;render();$("#view").scrollTop=top}
