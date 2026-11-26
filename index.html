@@ -229,9 +229,8 @@ const VIDEO_PAGE_SIZE=20;
 function videoGrid(){
   const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.youtube||c.audio||c.embed));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
-  const pages=Math.ceil(items.length/VIDEO_PAGE_SIZE);videoPage=Math.min(videoPage,pages-1);
-  const current=items.slice(videoPage*VIDEO_PAGE_SIZE,(videoPage+1)*VIDEO_PAGE_SIZE);
-  return `<div class="row">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${pages>1?`<div class="video-pages" aria-label="Video pages"><button data-video-page="prev" ${videoPage===0?"disabled":""}>Previous</button><span>Page ${videoPage+1} of ${pages}</span><button data-video-page="next" ${videoPage===pages-1?"disabled":""}>Next</button></div>`:""}`;
+  const current=items.slice(0,(videoPage+1)*VIDEO_PAGE_SIZE);
+  return `<div class="row">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">More</button></div>`:""}`;
 }
 const VIEWS={
  home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span><small class="banner-credit">${b.credit||""}</small></button>`).join("")}</div>
@@ -342,7 +341,7 @@ document.addEventListener("click",e=>{
   let n;
   if(n=g("[data-v]")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-c]")){cat=n.dataset.c;videoPage=0;render()}
-  else if(n=g("[data-video-page]")){videoPage+=n.dataset.videoPage==="next"?1:-1;render();$(".row").scrollIntoView({block:"start",behavior:"smooth"})}
+  else if(n=g("[data-video-more]")){const top=$("#view").scrollTop;videoPage++;render();$("#view").scrollTop=top}
   else if(n=g("[data-st]")){sub=n.dataset.st;render()}
   else if(n=g("[data-a]")){
     const a=n.dataset.a;
