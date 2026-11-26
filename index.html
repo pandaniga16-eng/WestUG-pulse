@@ -145,6 +145,21 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
 
 /* News images are clean, tappable story covers. */
 .news-card{padding:0;overflow:hidden}.news-card summary{cursor:pointer;list-style:none}.news-card summary::-webkit-details-marker{display:none}.news-card summary strong{padding:12px 14px 0;font-size:15px;line-height:1.3}.news-card summary small{padding:0 14px 10px}.news-card .news-poster{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#282830}.news-card p{margin:3px 14px 12px;line-height:1.5;font-size:14px}.news-card>a{display:block;margin:0 14px 15px;color:var(--y);font-size:13px}.credits-note{margin:14px 20px 24px;color:var(--mute);font-size:12px}.credits-note summary{cursor:pointer}.credits-note a{color:#ddd}.credits-note p{line-height:1.6}
+
+/* Poster detail screens */
+#eventDlg{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#0e0e13;color:#fff;overflow:auto;overscroll-behavior:contain}
+#eventDlg .event-shell{max-width:760px;min-height:100%;margin:auto;background:#111117;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+#eventDlg .event-top{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;color:#f7d33c;font-size:13px;font-weight:700;letter-spacing:.08em}
+#eventDlg .event-back{border:0;border-radius:50%;width:42px;height:42px;background:#272732;color:white;font-size:21px;cursor:pointer}
+#eventDlg .event-hero{min-height:240px;display:flex;flex-direction:column;justify-content:end;gap:8px;padding:32px 20px 22px;background-position:center;background-size:cover}
+#eventDlg .event-hero h2{font-size:clamp(25px,7vw,38px);line-height:1.1;max-width:600px}
+#eventDlg .event-hero p{color:#ffde4a;font-weight:600;line-height:1.4}
+#eventDlg .event-body{padding:20px;line-height:1.6;color:#e9e9ef}
+#eventDlg .event-body h3{font-size:18px;color:#fff;margin:4px 0 8px}
+#eventDlg .event-body p{margin:0 0 14px}
+#eventDlg .event-note{color:#c0c0c9;font-size:13px}
+#eventDlg .event-source{color:#ffde4a;font-size:13px}
+
 </style>
 </head>
 <body>
@@ -160,6 +175,7 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
   <nav aria-label="Main"></nav>
 </div>
 <dialog id="dlg" aria-labelledby="playerTitle"><div class="player-shell"><div class="player-top"><button class="close" id="x" aria-label="Close player">←</button><span class="player-brand">WEST PULSE UG</span></div><div class="frame" id="frame"></div><section class="player-detail"><div class="player-backdrop" id="playerBackdrop" aria-hidden="true"></div><img class="player-cover" id="playerCover" alt="" hidden><div class="player-info"><h2 id="playerTitle"></h2><p id="playerSub"></p></div></section><div class="player-note" id="playerNote"></div><details class="video-fallback"><summary>Having trouble playing?</summary><p>Some streams may be offline or unavailable to play here. <a id="youtubeLink" target="_blank" rel="noopener noreferrer">Open the original source</a></p></details><div class="player-related" id="playerRelated"></div></div></dialog>
+<dialog id="eventDlg" aria-labelledby="eventTitle"><div class="event-shell"><div class="event-top"><button class="event-back" id="eventBack" aria-label="Back to home">←</button><span>WEST PULSE UG</span></div><section class="event-hero" id="eventHero"><h2 id="eventTitle"></h2><p id="eventTag"></p></section><div class="event-body"><h3 id="eventHeading">About</h3><p id="eventDescription"></p><p class="event-note" id="eventNote"></p><a class="event-source" id="eventSource" target="_blank" rel="noopener noreferrer">View source ↗</a></div></div></dialog>
 <div id="toast" role="status"></div>
 
 <script>
@@ -167,7 +183,7 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
    youtube: ID after v= in a YouTube link (video, live stream or short)
    audio:   link to an .mp3 file (for music and podcasts)
    Leave both "" until you have the link.  hue = poster colour 0-360 */
-const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 · Mbarara University Inn Grounds","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/","image":"https://prowesscomms.com/wp/wp-content/uploads/2026/07/4.jpg","credit":"Previous edition · photo: Prowess Communications"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 · food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/","image":"https://www.showbizuganda.com/wp-content/uploads/2026/11/kisoro.png","credit":"Event poster · Showbiz Uganda"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale · travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006","image":"https://upload.wikimedia.org/wikipedia/commons/d/d4/Crater_lakes_in_Fort_Portal.jpg","credit":"Ozelleronny / Wikimedia Commons · CC BY-SA 4.0"}];
+const BANNERS=[{"title":"Mbarara Kids Fest","tag":"13 Dec 2026 · Mbarara","cta":"See event details","hue":275,"url":"https://prowesscomms.com/wp/mbarara-kids-fest/","image":"https://prowesscomms.com/wp/wp-content/uploads/2026/07/4.jpg","credit":"Previous edition · photo: Prowess Communications"},{"title":"Kisoro Nyama Festival","tag":"26 Dec 2026 · food, music & culture","cta":"See festival details","hue":25,"url":"https://kisoronyamafestival.com/","image":"https://www.showbizuganda.com/wp-content/uploads/2026/11/kisoro.png","credit":"Event poster · Showbiz Uganda"},{"title":"Explore Fort Portal","tag":"Caves, crater lakes & Kibale · travel guide","cta":"Read the guide","hue":155,"url":"https://www.pulse.ug/story/fort-portal-uganda-tourism-city-guide-2026111717414271006","image":"https://upload.wikimedia.org/wikipedia/commons/d/d4/Crater_lakes_in_Fort_Portal.jpg","credit":"Ozelleronny / Wikimedia Commons · CC BY-SA 4.0"}];
 // New upcoming events; existing banners are retained.
 BANNERS.unshift(...[{"title":"Kasese Hikers End of Year Party","tag":"5 Dec 2026 · Isaazi Rooftop, Ngabu Hotel","cta":"See club announcement","hue":155,"url":"https://www.travelagents10.com/UG/Kasese/155304417655724/Kasese-Hikers-Club","credit":"Illustration: Rwenzori porters · Vincent Mugaba · CC BY-SA 4.0","image":"https://upload.wikimedia.org/wikipedia/commons/e/ee/Rwenzori_porters.jpg"},{"title":"Country Radio Launch · Rukungiri","tag":"28 Nov 2026 · Rukungiri Main Stadium","cta":"See event details","hue":32,"url":"https://countryradiofm.com/2026/11/25/two-days-to-go-rukungiri-set-for-country-radio-87-6-fm-launch-and-boda-boda-festival-finals/","credit":"Illustration: Ankole dancers · TASHOBYA · CC BY-SA 4.0","image":"https://upload.wikimedia.org/wikipedia/commons/9/9b/Ankole_traditional_dance_in_Western_Uganda.jpg"},{"title":"Rwenzori Marathon 2027","tag":"4 Sep 2027 · Kasese","cta":"See announcement","hue":210,"url":"https://washington.mofa.go.ug/article/save-date-rwenzori-marathon-coming-back-4-september-2027-bigger-prizes","credit":"Rwenzori peaks · Rafał Kozubek · CC BY-SA 4.0","image":"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Alexandra_Peak_Margherita_Peak_Rwenzori.jpg/960px-Alexandra_Peak_Margherita_Peak_Rwenzori.jpg"}]);
 const CATS=["Music","Drama","Movies","Comedy","Talk & Culture","Reality Shows","Concerts"];
@@ -364,7 +380,7 @@ EXPLORE_VIDEOS.forEach(c=>{c.note="Video by "+c.creator+" · YouTube"});
 SRC.e=EXPLORE_VIDEOS;
 const exploreYoutube=(c,i)=>`<article class="explore-card"><button class="po" data-p="e${i}" aria-label="Play ${c.title}"><div class="pi explore-cover" style="background:linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover"><span class="youtube-badge"><svg viewBox="0 0 28 20" width="22" height="16" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#f00"/><path d="M11 5.5v9l8-4.5z" fill="white"/></svg> YouTube</span>${c.title}</div><small>Video: ${c.creator}</small></button></article>`;
 const VIEWS={
- home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">${b.cta}</span></button>`).join("")}</div>
+ home:()=>`<div class="banners" id="bn">${BANNERS.map((b,i)=>`<button class="bn" data-p="b${i}" style="background:${b.image?`linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.25)),url('${b.image}') center/cover`:grad(b.hue)}"><h2>${b.title}</h2><span class="tag">${b.tag}</span><span class="cta">View details</span></button>`).join("")}</div>
   <h2 class="sec">This week · 23–27 November 2026</h2>
   <div class="news-list">
    <details class="news-card"><summary><img class="news-poster" src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Bamba_cultural_group.jpg" alt="Bamba cultural group in Kasese District" loading="lazy"><strong>Kasese: supporting local languages and cultural identity</strong><small>Kasese Guide Radio · 26 Nov 2026</small></summary><p>At a kindergarten graduation in Kasese, children’s mentor Specioza Katsetsere encouraged parents to support local languages and cultural identity. She said this can help children communicate with relatives in their communities.</p><a href="https://kaseseguideradio.com/parents-urged-to-protect-cultural-identity-local-language-among-children/" target="_blank" rel="noopener noreferrer">Read the original report · Kasese Guide Radio</a></details>
@@ -383,9 +399,9 @@ const VIEWS={
   <a class="social-link" href="https://www.tiktok.com/@west.pulse.ug" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>Follow WEST PULSE UG on TikTok</a>`,
  channels:()=>`<div class="channel-list">${CHANNELS.length?CHANNELS.map(channelCard).join(""):`<p class="empty">No verified live streams available yet. Find recorded shows in More → TV archive.</p>`}<button class="feature" data-radio><span>RADIO<small>Listen here</small></span></button></div>`,
  guide:()=>`<div class="guide-wrap"><h2>TV Guide</h2><p>Explore programmes from each station here. Broadcast days and times have not been confirmed, and programmes may change.</p>
- <section class="guide-card"><h3>TV West</h3><ul class="guide-programmes"><li><strong>Sisimuka</strong><small>TV West programme</small></li><li><strong>Omushongi</strong><small>Lunch-time request show</small></li><li><strong>Omubabiro</strong><small>TV West programme</small></li><li><strong>Omuneneserezo</strong><small>Contemporary music</small></li><li><strong>Agacencwire</strong><small>News</small></li><li><strong>Age’ihangwe</strong><small>National news</small></li><li><strong>Ankole Actors</strong><small>Local comedy</small></li><li><strong>Tuhanuure</strong><small>Talk show</small></li></ul><button class="guide-watch" data-p="a0">▶ Watch an Agacencwire recording here</button></section>
- <section class="guide-card"><h3>Rwenzori TV</h3><ul class="guide-programmes"><li><strong>Bwakere Rwenzori</strong><small>Rwenzori TV programme</small></li><li><strong>Corridors of Power</strong><small>Rwenzori TV programme</small></li></ul><button class="guide-watch" data-p="a6">▶ Watch a Bwakere Rwenzori recording here</button></section>
- <section class="guide-card"><h3>UBC Television</h3><ul class="guide-programmes"><li><strong>Good Morning Uganda</strong><small>Morning news and discussion</small></li><li><strong>Good Morning Uganda Extra</strong><small>Interviews and discussion</small></li><li><strong>UBC News Tonight</strong><small>News bulletin</small></li><li><strong>UBC Leero</strong><small>Luganda news</small></li><li><strong>Buuza Kamisona</strong><small>Tax education</small></li></ul></section><h3>Watch recorded TV</h3><p>Catch up on recordings from the archive.</p><div class="list">${[0,1,4,6].map(i=>rowItem('a'+i,thumb(TV_ARCHIVE[i]),TV_ARCHIVE[i].title,TV_ARCHIVE[i].sub)).join('')}</div></div>`,
+ <section class="guide-card"><h3>TV West</h3><ul class="guide-programmes"><li><strong>Sisimuka</strong><small>TV West programme</small></li><li><strong>Omushongi</strong><small>Lunch-time request show</small></li><li><strong>Omubabiro</strong><small>TV West programme</small></li><li><strong>Omuneneserezo</strong><small>Contemporary music</small></li><li><strong>Agacencwire</strong><small>News</small></li><li><strong>Age’ihangwe</strong><small>National news</small></li><li><strong>Ankole Actors</strong><small>Local comedy</small></li><li><strong>Tuhanuure</strong><small>Talk show</small></li></ul></section>
+ <section class="guide-card"><h3>Rwenzori TV</h3><ul class="guide-programmes"><li><strong>Bwakere Rwenzori</strong><small>Rwenzori TV programme</small></li><li><strong>Corridors of Power</strong><small>Rwenzori TV programme</small></li></ul></section>
+ <section class="guide-card"><h3>UBC Television</h3><ul class="guide-programmes"><li><strong>Good Morning Uganda</strong><small>Morning news and discussion</small></li><li><strong>Good Morning Uganda Extra</strong><small>Interviews and discussion</small></li><li><strong>UBC News Tonight</strong><small>News bulletin</small></li><li><strong>UBC Leero</strong><small>Luganda news</small></li><li><strong>Buuza Kamisona</strong><small>Tax education</small></li></ul></section></div>`,
  more:()=>`<div class="subtabs">${[["archive","TV archive"],["radio","Radio"],["pod","Podcasts"],["about","About"]].map(t=>`<button class="st${sub===t[0]?" on":""}" data-st="${t[0]}">${t[1]}</button>`).join("")}</div><div class="list">${
   sub==="archive"?TV_ARCHIVE.map((c,i)=>rowItem("a"+i,thumb(c),c.title,c.sub)).join("")
   :sub==="radio"?`<section class="radio-list"><h2>Radio</h2><p>Tap a station to listen here. If a station page does not load in the player, use the “Open the original source” link under it.</p>${RADIO.map(radioCard).join("")}</section>`
@@ -484,9 +500,31 @@ function preparePlayer(k,c){
 }
 function openPlayer(){const dlg=$("#dlg");if(!dlg.open)dlg.showModal()}
 
+const EVENT_DETAILS={
+  "Kasese Hikers End of Year Party":{description:"Kasese Hikers Club is hosting its end-of-year party at Isaazi Rooftop, Ngabu Hotel. The club says everyone is welcome, including people who are not hikers.",note:"The start time and entry price have not been confirmed.",source:"https://www.travelagents10.com/UG/Kasese/155304417655724/Kasese-Hikers-Club"},
+  "Country Radio Launch · Rukungiri":{description:"Country Radio 87.6 FM celebrates its launch and the Boda Boda Festival finals. The programme includes music, wrestling, a free medical camp and prayers. The football final is at St Gerald’s Secondary School Nyakibale playground.",note:"Event information can change; check with the organisers before travelling.",source:"https://countryradiofm.com/2026/11/25/two-days-to-go-rukungiri-set-for-country-radio-87-6-fm-launch-and-boda-boda-festival-finals/"},
+  "Rwenzori Marathon 2027":{description:"Run in Kasese with four distances: 42.2 km, 21.1 km, 10 km and 5 km. The full marathon starts at Kikorongo on the Equator; the other races start on Rwenzori Street. All finish at The Arena in Kasese.",note:"Check the official race information for registration, fees and confirmed start times.",source:"https://rwenzorimarathon.com/race-info"},
+  "Mbarara Kids Fest":{description:"A family event with games, educational exhibitions and performances. A listing places it at Mbarara University Inn Grounds.",note:"Venue confirmation is recommended: another listing names a different venue for a similarly named event on the same day. Time and price have not been confirmed.",source:"https://prowesscomms.com/wp/mbarara-kids-fest/"},
+  "Kisoro Nyama Festival":{description:"A Boxing Day celebration of food, music and culture at Mondi Lodge, Kisoro. The programme includes meat dishes, live cooking and DJ music.",note:"Tickets are reported to be on sale, but the price and start time have not been confirmed.",source:"https://www.showbizuganda.com/2026/11/kisoro-nyama-festival-set-to-transform-boxing-day-into-a-celebration-of-food-music-culture/"},
+  "Explore Fort Portal":{description:"Discover Fort Portal and its surroundings, including Amabere Ga Nyinamwiru Caves, Tooro Kingdom Palace, crater lakes and nearby Kibale National Park.",note:"This is a destination guide, not a dated event.",source:"https://fortportalcity.go.ug/who-we-are/"}
+};
+function openEvent(b){
+  const info=EVENT_DETAILS[b.title]||{description:b.tag,note:"",source:b.url};
+  document.querySelector('#eventTitle').textContent=b.title;
+  document.querySelector('#eventTag').textContent=b.tag;
+  document.querySelector('#eventHeading').textContent=b.title==='Explore Fort Portal'?'Explore the area':'About this event';
+  document.querySelector('#eventDescription').textContent=info.description;
+  document.querySelector('#eventNote').textContent=info.note||'';
+  const source=document.querySelector('#eventSource');source.href=info.source||b.url;source.hidden=!source.href;
+  const hero=document.querySelector('#eventHero');hero.style.backgroundImage=b.image?`linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.15)),url("${b.image}")`:'linear-gradient(135deg,#563e08,#17171e)';
+  const dlg=document.querySelector('#eventDlg');dlg.scrollTop=0;if(!dlg.open)dlg.showModal();
+}
+document.querySelector('#eventBack').addEventListener('click',()=>document.querySelector('#eventDlg').close());
+
 function play(k){
   const c=SRC[k[0]]&&SRC[k[0]][+k.slice(1)];
   if(!c)return;
+  if(k[0]==="b"){openEvent(c);return}
   if(playable(c))preparePlayer(k,c);
   // The selected four live stations have no external fallback link, even on error.
   const existingLink=$("#youtubeLink");
