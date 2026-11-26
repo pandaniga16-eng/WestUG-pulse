@@ -90,6 +90,23 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 .subtabs{gap:clamp(12px,4vw,28px);overflow-x:auto}.st{white-space:nowrap}.channel-card:is(a){text-decoration:none;color:inherit}.radio-list{padding:0 18px 24px}.radio-list p{color:var(--mute);font-size:14px;line-height:1.5}.radio-card{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}.radio-card .lg{flex:none;width:62px;height:62px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px}.radio-card span{flex:1;min-width:0}.radio-card strong,.radio-card small{display:block}.radio-card small{color:var(--mute);margin-top:3px}.radio-card small:last-child{color:var(--y)}
 button.radio-card{width:100%;text-align:left}
 .explore-cover{position:relative}.youtube-badge{position:absolute;top:8px;left:8px;display:flex;gap:4px;align-items:center;padding:4px 6px;border-radius:7px;background:rgba(0,0,0,.8);font:700 11px Arial,sans-serif;color:white;text-shadow:none}.youtube-badge svg{flex:none}
+
+/* Immersive player: fullscreen app view, with the original controls and source links. */
+#dlg{position:fixed;inset:0;width:100%;height:100%;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;overflow:auto;background:#0e0e13;color:#fff;overscroll-behavior:contain}
+#dlg .player-shell{width:100%;max-width:760px;min-height:100%;margin:auto;padding-bottom:calc(24px + env(safe-area-inset-bottom));background:#111117}
+#dlg .player-top{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;color:#fff}
+#dlg .close{position:static;flex:none;width:42px;height:42px;background:#272732;color:#fff;font-size:21px}
+#dlg .player-brand{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--y)}
+#dlg .frame{background:#000;width:100%;aspect-ratio:16/9}
+#dlg .frame.audio-frame{height:210px;aspect-ratio:auto}#dlg .frame.social-frame{height:min(640px,70vh);aspect-ratio:auto}
+#dlg .player-detail{position:relative;display:flex;gap:15px;padding:18px 16px;min-height:132px;overflow:hidden;background:#1a1a22}
+#dlg .player-backdrop{position:absolute;inset:0;background-position:center;background-size:cover;opacity:.17;filter:blur(12px);transform:scale(1.1);pointer-events:none}
+#dlg .player-cover{position:relative;flex:none;width:76px;aspect-ratio:3/4;border-radius:9px;object-fit:cover;background:#292934}
+#dlg .player-info{position:relative;align-self:center;min-width:0}#dlg .player-info h2{font-size:20px;line-height:1.22;overflow-wrap:anywhere}#dlg .player-info p{font-size:13px;color:#d0d0d8;margin-top:7px;line-height:1.45}
+#dlg .player-note,#dlg .video-fallback{background:#111117}#dlg .player-related{padding:10px 16px 0}#dlg .player-related:empty{display:none}#dlg .related-heading{font-size:18px;margin:12px 0}#dlg .related-list{display:grid;gap:8px}
+#dlg .related-item{display:flex;align-items:center;gap:12px;width:100%;padding:8px;border-radius:10px;background:#202029;text-align:left}#dlg .related-thumb{width:100px;aspect-ratio:16/9;object-fit:cover;flex:none;border-radius:6px;background:#30303a}#dlg .related-text{min-width:0}#dlg .related-text strong,#dlg .related-text small{display:block;overflow-wrap:anywhere}#dlg .related-text strong{font-size:14px;line-height:1.3}#dlg .related-text small{font-size:12px;color:#b8b8c2;margin-top:4px;line-height:1.35}
+@media(max-width:360px){#dlg .related-thumb{width:80px}#dlg .player-info h2{font-size:18px}}
+
 </style>
 </head>
 <body>
@@ -104,7 +121,7 @@ button.radio-card{width:100%;text-align:left}
   <div id="dock"><div><strong id="dt"></strong><small id="ds"></small></div><audio id="au" controls></audio></div>
   <nav aria-label="Main"></nav>
 </div>
-<dialog id="dlg"><button class="close" id="x" aria-label="Close video">✕</button><div class="frame" id="frame"></div><div class="player-note" id="playerNote"></div><details class="video-fallback"><summary>Having trouble playing?</summary><p>Some streams may be offline or unavailable to play here. <a id="youtubeLink" target="_blank" rel="noopener noreferrer">Open the original source</a></p></details></dialog>
+<dialog id="dlg" aria-labelledby="playerTitle"><div class="player-shell"><div class="player-top"><button class="close" id="x" aria-label="Close player">←</button><span class="player-brand">WEST PULSE UG</span></div><div class="frame" id="frame"></div><section class="player-detail"><div class="player-backdrop" id="playerBackdrop" aria-hidden="true"></div><img class="player-cover" id="playerCover" alt="" hidden><div class="player-info"><h2 id="playerTitle"></h2><p id="playerSub"></p></div></section><div class="player-note" id="playerNote"></div><details class="video-fallback"><summary>Having trouble playing?</summary><p>Some streams may be offline or unavailable to play here. <a id="youtubeLink" target="_blank" rel="noopener noreferrer">Open the original source</a></p></details><div class="player-related" id="playerRelated"></div></div></dialog>
 <div id="toast" role="status"></div>
 
 <script>
@@ -234,8 +251,8 @@ const $=s=>document.querySelector(s);
 /* Live TV: "frame" loads the station's page inside the player window.
    If a station gives you a direct embed link, put it in "frame". */
 CHANNELS.push(
- {name:"NTV Uganda",color:"#b31b1b",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/abul2026.m3u8",url:"https://ntv.co.ug/live-tv"},
- {name:"Spark TV",color:"#db246d",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/spark2026.m3u8",url:"https://ntv.co.ug/spark-live-tv-2"}
+ {name:"NTV Uganda",logo:"https://ntv.co.ug/wp-content/uploads/2025/07/ntv_logo_bg.png",color:"#b31b1b",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/abul2026.m3u8",url:"https://ntv.co.ug/live-tv"},
+ {name:"Spark TV",logo:"https://www.nationmedia.com/wp-content/uploads/2017/06/Spark-Logo.png",color:"#db246d",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/spark2026.m3u8",url:"https://ntv.co.ug/spark-live-tv-2"}
 );
 /* Radio: put each station's direct audio stream (https, .mp3/.aac/.m3u8-free) in "stream".
    While "stream" is empty, the station's page loads inside the player window ("frame"). */
@@ -368,8 +385,47 @@ const youtubeAPI=new Promise(resolve=>{
   script.onerror=()=>resolve(false);document.head.appendChild(script);
   setTimeout(()=>resolve(!!(window.YT && window.YT.Player)),10000);
 });
+
+// Only call things episodes when their titles explicitly identify the same series.
+const seriesName=c=>{const m=(c.title||"").match(/^(.+?)\s*[·-]\s*(?:episode|show)\s+\d+\b/i);return m?m[1].trim().toLowerCase():""};
+const playable=c=>!!(c.youtube||c.video||c.hls||c.channelId||c.frame||c.social||c.embed);
+const coverFor=c=>c.cover||c.image||(c.youtube?"https://i.ytimg.com/vi/"+encodeURIComponent(c.youtube)+"/hqdefault.jpg":c.logo||"");
+function preparePlayer(k,c){
+  const dlg=$("#dlg"), cover=coverFor(c), image=$("#playerCover"), backdrop=$("#playerBackdrop");
+  $("#playerTitle").textContent=c.title||c.name||c.caption||"WEST PULSE UG";
+  $("#playerSub").textContent=c.sub||c.note||c.author||c.tag||"";
+  image.hidden=!cover;if(cover){image.src=cover}else image.removeAttribute("src");
+  backdrop.style.backgroundImage=cover?'url("'+cover.replace(/["\\]/g,"")+'")':"none";
+  const container=$("#playerRelated");container.replaceChildren();
+  const entries=[];let heading="";
+  if(k[0]==="h"){
+    heading="More channels";CHANNELS.forEach((item,i)=>{if("h"+i!==k&&playable(item))entries.push(["h"+i,item])});
+  }else{
+    const pool=[...CONTENT.map((item,i)=>["c"+i,item]),...TV_ARCHIVE.map((item,i)=>["a"+i,item]),...PODCASTS.map((item,i)=>["p"+i,item])];
+    const series=seriesName(c);
+    const episodes=series?pool.filter(([key,item])=>key!==k&&playable(item)&&seriesName(item)===series):[];
+    if(episodes.length){heading="More episodes and shows";episodes.sort((a,b)=>{const number=x=>+(x.title.match(/(?:episode|show)\s+(\d+)/i)||[])[1];return number(b[1])-number(a[1])});entries.push(...episodes)}
+    else if(c.cat){heading="More in "+c.cat;entries.push(...pool.filter(([key,item])=>key!==k&&playable(item)&&item.cat===c.cat).slice(0,12))}
+    else if(k[0]==="a"){heading="More recorded TV";entries.push(...TV_ARCHIVE.map((item,i)=>["a"+i,item]).filter(([key,item])=>key!==k&&playable(item)).slice(0,12))}
+    else if(k[0]==="p"){heading="More podcasts";entries.push(...PODCASTS.map((item,i)=>["p"+i,item]).filter(([key,item])=>key!==k&&playable(item)).slice(0,12))}
+  }
+  if(entries.length){
+    const h=document.createElement("h3");h.className="related-heading";h.textContent=heading;container.appendChild(h);
+    const list=document.createElement("div");list.className="related-list";
+    entries.forEach(([key,item])=>{
+      const button=document.createElement("button");button.className="related-item";button.dataset.p=key;
+      const img=document.createElement("img");img.className="related-thumb";img.alt="";const src=coverFor(item);if(src)img.src=src;else img.hidden=true;
+      const text=document.createElement("span"),title=document.createElement("strong"),sub=document.createElement("small");text.className="related-text";title.textContent=item.title||item.name||item.caption||"";sub.textContent=item.sub||item.note||item.author||"";text.append(title,sub);button.append(img,text);list.appendChild(button);
+    });container.appendChild(list);
+  }
+  dlg.scrollTop=0;
+}
+function openPlayer(){const dlg=$("#dlg");if(!dlg.open)dlg.showModal()}
+
 function play(k){
-  const c=SRC[k[0]][+k.slice(1)];
+  const c=SRC[k[0]]&&SRC[k[0]][+k.slice(1)];
+  if(!c)return;
+  if(playable(c))preparePlayer(k,c);
   const session=++playerSession;
   killHls();
   if(c.hls){
@@ -389,7 +445,7 @@ function play(k){
       hlsInst.on(Hls.Events.ERROR,(ev,d)=>{if(d&&d.fatal)fail()});
       hlsInst.loadSource(c.hls);hlsInst.attachMedia(video);
     }else{fail()}
-    $("#dlg").showModal();video.play().catch(()=>{});return;
+    openPlayer();video.play().catch(()=>{if(session===playerSession)note.textContent="Tap play in the video to start."});return;
   }
   if(c.stream){
     // Direct radio stream: plays in the bottom player bar
@@ -405,7 +461,7 @@ function play(k){
     const source=document.createElement("a");source.href=c.source;source.target="_blank";source.rel="noopener noreferrer";source.textContent="Original";note.append(source,document.createTextNode(" · "));
     const license=document.createElement("a");license.href="https://creativecommons.org/licenses/by-sa/4.0/";license.target="_blank";license.rel="noopener noreferrer";license.textContent="CC BY-SA 4.0";note.append(license);
     video.addEventListener("error",()=>{if(session===playerSession)note.prepend(document.createTextNode("Video unavailable right now. "))});
-    $("#dlg").showModal();video.play().catch(()=>{});return;
+    openPlayer();video.play().catch(()=>{if(session===playerSession)note.prepend(document.createTextNode("Tap play in the video to start. "))});return;
   }
   if(c.embed || c.social || c.channelId || c.youtube || c.frame){
     $("#au").pause();$("#dock").classList.remove("on");
@@ -432,7 +488,7 @@ function play(k){
     iframe.allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
     iframe.referrerPolicy="strict-origin-when-cross-origin";iframe.allowFullscreen=true;
     frame.replaceChildren(iframe);noteEl.textContent=note;$("#youtubeLink").href=original;
-    $("#dlg").showModal();iframe.src=src;
+    openPlayer();iframe.src=src;
     if(!c.embed && !c.social && !c.frame) youtubeAPI.then(ready=>{
       if(!ready || session!==playerSession || !iframe.isConnected)return;
       let playing=false;
@@ -488,7 +544,6 @@ document.addEventListener("click",e=>{
 });
 $("#q").addEventListener("input",e=>{q=e.target.value.trim();render()});
 $("#x").addEventListener("click",closeVideo);
-$("#dlg").addEventListener("click",e=>{if(e.target.id==="dlg")closeVideo()});
 $("#dlg").addEventListener("cancel",()=>{playerSession++;killHls();$("#frame").innerHTML=""});
 render();
 </script>
