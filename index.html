@@ -160,6 +160,19 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
 #eventDlg .event-note{color:#c0c0c9;font-size:13px}
 #eventDlg .event-source{color:#ffde4a;font-size:13px}
 
+
+/* Streaming-style shelves retain all categories and existing players. */
+.row.feature-grid{display:flex;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;align-items:start;padding-bottom:8px}
+.row.feature-grid::-webkit-scrollbar,.content-shelf::-webkit-scrollbar{display:none}
+.row.feature-grid>.po,.row.feature-grid>.explore-card{flex:0 0 clamp(132px,38vw,184px);scroll-snap-align:start}
+.po{text-align:left}.poster-title{display:block;color:#fff;font-size:13px;line-height:1.3;margin:7px 0 0;overflow-wrap:anywhere}
+.pi{border-radius:12px;aspect-ratio:3/4.1}
+.shelf-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;margin:23px 0 10px}
+.shelf-heading h3{font-size:19px;line-height:1.2}.shelf-heading button{color:var(--y);font-weight:600;font-size:13px;min-height:44px}.shelf-heading span{font-size:11px;color:var(--mute)}
+.content-shelf{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:0 20px 8px;scrollbar-width:none}
+.content-shelf>.po{flex:0 0 clamp(132px,38vw,184px);scroll-snap-align:start}
+.category-shelf{margin-top:6px}.video-pages{justify-content:flex-start}.video-pages button{color:var(--y)}
+
 </style>
 </head>
 <body>
@@ -331,6 +344,8 @@ const RADIO=[
  {name:"Glory FM 106.7",color:"#a56a16",logo:"https://gloryfm.live/wp-content/uploads/2020/10/gloryfm-radio-106.png",note:"Mbarara",stream:"",frame:"https://gloryfm.live/",url:"https://gloryfm.live/"},
  {name:"Messenger FM",color:"#b04644",logo:"https://messengerfm.com/wp-content/uploads/2022/02/cropped-messengerfm-192x192.jpg",note:"Mbarara",stream:"",frame:"https://messengerfm.com/",url:"https://messengerfm.com/"}
 ];
+// Official external listing supplied by the site owner. MTN may require sign-in.
+CONTENT.splice(CONTENT.findIndex(c=>c.cat==='Movies'),0,{cat:'Movies',title:'Drought Girl',sub:'Watch on MTN TV · sign-in may be required',hue:30,external:'https://mtntv.co.ug/vod/detail/23156',externalLabel:'Watch on MTN TV'});
 const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS,a:TV_ARCHIVE,r:RADIO};
 const svg=(p,s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const P={
@@ -351,7 +366,7 @@ const TITLES={home:"Home",channels:"Channels",guide:"TV Guide",more:"More",short
 let view="home",cat=CATS[0],sub="archive",q="",bt,videoPage=0;
 
 const grad=h=>`linear-gradient(160deg,hsl(${h} 65% 38%),hsl(${(h+45)%360} 60% 14%))`;
-const poster=(c,k)=>`${c.external?`<a class="po" href="${c.external}" target="_blank" rel="noopener noreferrer" aria-label="${c.title} · listen on AfroCharts (opens a new tab)">`:`<button class="po" data-p="${k}">`}<div class="pi" style="background:${c.cover?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url('${c.cover}') center/cover`:c.youtube?`linear-gradient(0deg,rgba(0,0,0,.88),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.title}</div><small>${c.sub}</small>${c.external?"</a>":"</button>"}`;
+const poster=(c,k)=>`${c.external?`<a class="po" href="${c.external}" target="_blank" rel="noopener noreferrer" aria-label="${c.title} · ${c.externalLabel||'Listen on AfroCharts'} (opens a new tab)">`:`<button class="po" data-p="${k}">`}<div class="pi" style="background:${c.cover?`linear-gradient(0deg,rgba(0,0,0,.55),transparent 75%),url('${c.cover}') center/cover`:c.youtube?`linear-gradient(0deg,rgba(0,0,0,.55),transparent 75%),url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${!c.cover&&!c.youtube?c.title:''}</div><strong class="poster-title">${c.title}</strong><small>${c.sub}</small>${c.external?"</a>":"</button>"}`;
 const rowItem=(k,lg,name,sub2)=>`<button class="li" data-p="${k}">${lg}<span class="n">${name}${sub2?`<small>${sub2}</small>`:""}</span>${svg(P.chev,22)}</button>`;
 const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
@@ -366,7 +381,14 @@ function videoGrid(){
   const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
   if(!items.length)return `<div class="row"><p class="empty">No playable shows here yet.</p></div>`;
   const current=items.slice(0,(videoPage+1)*VIDEO_PAGE_SIZE);
-  return `<div class="row">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">More</button></div>`:""}`;
+  return `<div class="shelf-heading"><h3>${cat}</h3><span>Swipe to explore</span></div><div class="content-shelf" aria-label="${cat} videos">${current.map(({c,i})=>poster(c,"c"+i)).join("")}</div>${current.length<items.length?`<div class="video-pages"><button data-video-more aria-label="Show more videos in ${cat}">Show more ${cat}</button></div>`:""}`;
+}
+function moreCategoryShelves(){
+  return CATS.filter(name=>name!==cat).map(name=>{
+    const items=CONTENT.map((c,i)=>({c,i})).filter(({c})=>c.cat===name&&(c.video||c.youtube||c.audio||c.embed||c.social||c.external));
+    if(!items.length)return '';
+    return `<section class="category-shelf"><div class="shelf-heading"><h3>${name}</h3><button data-c="${name}" aria-label="See all ${name}">See all ›</button></div><div class="content-shelf" aria-label="${name} videos">${items.slice(0,12).map(({c,i})=>poster(c,'c'+i)).join('')}</div></section>`;
+  }).join('');
 }
 const EXPLORE_VIDEOS=[
  {title:'Rwenzori Mountains',creator:'Johannes Gruenwald',youtube:'N9JR3LrcuZ0'},
@@ -390,9 +412,10 @@ const VIEWS={
   <h2 class="sec">Explore Western Uganda</h2><div class="row feature-grid">${CONTENT.slice(0,2).map((c,i)=>`<article class="explore-card">${poster(c,"c"+i)}<small class="photo-credit">Cover: <a href="${c.coverPage}" target="_blank" rel="noopener noreferrer">${c.coverCredit}</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></small></article>`).join("")}${EXPLORE_VIDEOS.map(exploreYoutube).join("")}</div>
   <h2 class="sec">Western DJ mixes</h2><div class="row feature-grid">${CONTENT.slice(2,8).map((c,i)=>poster(c,"c"+(i+2))).join("")}</div>
   <h2 class="sec">More DJ mixes</h2><div class="row feature-grid">${CONTENT.slice(-2).map((c,i)=>poster(c,"c"+(CONTENT.length-2+i))).join("")}</div>
-  <h2 class="sec">Entertainment</h2>
+  <h2 class="sec" id="entertainment">Entertainment</h2>
   <div class="pills">${CATS.map(c=>`<button class="pill${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("")}</div>
   ${videoGrid()}
+  ${moreCategoryShelves()}
   <button class="feature" data-v="channels"><span>WEST PULSE UG<br>TV<small>Live TV & recorded channels</small></span></button><button class="feature" data-radio><span>WEST PULSE UG<br>RADIO<small>Listen here</small></span></button>
   <details class="credits-note"><summary>Photo credits</summary><p>News covers show related scenes, not the events in the reports: <a href="https://commons.wikimedia.org/wiki/File:Bamba_cultural_group.jpg" target="_blank" rel="noopener noreferrer">Bamba cultural group by Aubry Arihona</a>; <a href="https://commons.wikimedia.org/wiki/File:Boda_boda_drivers_of_Uganda.jpg" target="_blank" rel="noopener noreferrer">boda boda drivers by Hannah Kempe</a>; <a href="https://commons.wikimedia.org/wiki/File:Uganda_Traditional_Dance_Performances_at_Ndere_Centre_31.jpg" target="_blank" rel="noopener noreferrer">Ndere Centre dancers by Kateregga1</a>.</p><p>Event and travel covers: <a href="https://commons.wikimedia.org/wiki/File:Rwenzori_porters.jpg" target="_blank" rel="noopener noreferrer">Vincent Mugaba</a>; <a href="https://commons.wikimedia.org/wiki/File:Ankole_traditional_dance_in_Western_Uganda.jpg" target="_blank" rel="noopener noreferrer">TASHOBYA</a>; <a href="https://commons.wikimedia.org/wiki/File:Alexandra_Peak_Margherita_Peak_Rwenzori.jpg" target="_blank" rel="noopener noreferrer">Rafał Kozubek</a>; <a href="https://commons.wikimedia.org/wiki/File:Crater_lakes_in_Fort_Portal.jpg" target="_blank" rel="noopener noreferrer">Ozelleronny</a>. These Wikimedia images are cropped and used under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>. <a href="https://prowesscomms.com/wp/mbarara-kids-fest/" target="_blank" rel="noopener noreferrer">Mbarara Kids Fest</a>: previous edition photo by Prowess Communications. <a href="https://www.showbizuganda.com/" target="_blank" rel="noopener noreferrer">Kisoro Nyama Festival</a>: artwork from Showbiz Uganda.</p></details>
   <div><a class="social-link" href="mailto:westpulseug@gmail.com">Contact: westpulseug@gmail.com</a></div>
@@ -412,7 +435,7 @@ const VIEWS={
 
 function results(){
   const t=q.toLowerCase();
-  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social||c.external)?["c"+i,thumb(c),c.title,c.external?"Music · Listen on AfroCharts ↗":c.cat,c.title,c.external]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,c.url&&!playable(c)?"Channel · official page ↗":c.note||"Channel",c.name,c.url&&!playable(c)?c.url:null]),...RADIO.map((c,i)=>["r"+i,chLogo(c),c.name,"Radio · tap to listen",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
+  const hit=[...CONTENT.map((c,i)=>(c.video||c.youtube||c.audio||c.embed||c.social||c.external)?["c"+i,thumb(c),c.title,c.external?c.cat+" · "+(c.externalLabel||"Listen on AfroCharts")+" ↗":c.cat,c.title,c.external]:null).filter(Boolean),...CHANNELS.map((c,i)=>["h"+i,chLogo(c),c.name,c.url&&!playable(c)?"Channel · official page ↗":c.note||"Channel",c.name,c.url&&!playable(c)?c.url:null]),...RADIO.map((c,i)=>["r"+i,chLogo(c),c.name,"Radio · tap to listen",c.name]),...TV_ARCHIVE.map((c,i)=>["a"+i,thumb(c),c.title,c.sub,c.title]),...PODCASTS.map((c,i)=>["p"+i,thumb(c),c.title,"Podcast",c.title])].filter(x=>x[4].toLowerCase().includes(t));
   return hit.length?`<div class="list">${hit.map(x=>x[5]?`<a class="li" href="${x[5]}" target="_blank" rel="noopener noreferrer">${x[1]}<span class="n">${x[2]}<small>${x[3]}</small></span>${svg(P.chev,22)}</a>`:rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
@@ -636,7 +659,7 @@ document.addEventListener("click",e=>{
   else if(n=g("[data-short-move]")){const section=n.closest(".sh"),next=n.dataset.shortMove==="1"?section.nextElementSibling:section.previousElementSibling;if(next)next.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
   else if(n=g("[data-radio]")){view="more";sub="radio";q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
   else if(n=g("[data-v]")){view=n.dataset.v;q="";$("#q").value="";$("#sbar").classList.remove("on");render()}
-  else if(n=g("[data-c]")){cat=n.dataset.c;videoPage=0;render()}
+  else if(n=g("[data-c]")){cat=n.dataset.c;videoPage=0;render();const section=$("#entertainment");if(section)section.scrollIntoView({block:"start"})}
   else if(n=g("[data-video-more]")){const top=$("#view").scrollTop;videoPage++;render();$("#view").scrollTop=top}
   else if(n=g("[data-st]")){sub=n.dataset.st;render()}
   else if(n=g("[data-a]")){
