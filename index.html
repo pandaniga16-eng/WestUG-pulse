@@ -183,23 +183,6 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
 
 /* Continue Watching */
 .cw-shelf>.cw-card{flex:0 0 clamp(132px,38vw,184px);min-width:0;scroll-snap-align:start}.cw-card .po{width:100%}.cw-track{height:4px;background:#464650;border-radius:4px;overflow:hidden;margin-top:8px}.cw-track span{display:block;height:100%;background:var(--y)}.cw-card>small{display:block;color:var(--mute);font-size:11px;margin-top:5px}.cw-remove{font-size:12px;color:var(--y);min-height:40px;text-decoration:underline}.shelf-heading h2{font-size:19px;line-height:1.2}
-
-/* Screenshot-like vertical live-channel feed; poster remains until a frame is playing. */
-.channel-list{gap:18px;padding:0 12px 28px}
-.channel-card{height:auto;min-height:0;aspect-ratio:16/9;align-items:flex-end;isolation:isolate;background:#16161d}
-.channel-card::after{z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 32%,rgba(0,0,0,.9))}
-.channel-poster,.channel-preview-slot{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.channel-poster{z-index:0;display:grid;place-items:center;background:#262632}
-.channel-cover,.channel-poster-logo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.channel-poster-logo{object-fit:contain;padding:22%;background:#16161d}
-.channel-preview-slot{z-index:1}.channel-preview-slot:empty{display:none}
-.channel-preview-media{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;opacity:0;background:#08080b}
-.channel-preview-playing .channel-preview-media{opacity:1}
-.channel-preview-status{position:absolute;z-index:2;top:14px;left:14px;padding:6px 9px;border-radius:6px;background:#000b;color:#fff;font:600 11px/1.2 system-ui,sans-serif;letter-spacing:.03em}
-.channel-info{z-index:3}.channel-info .lg{width:54px;height:54px}
-.station-links{position:relative;z-index:4}
-@media(min-width:700px){.channel-list{max-width:760px;margin:auto}}
-@media(prefers-reduced-motion:reduce){.channel-preview-media{transition:none}}
 </style>
 <style>@media (min-width:700px){.app{max-width:1200px}}</style>
 <style>
@@ -426,7 +409,7 @@ const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,3);
 const chLogo=c=>`<div class="lg" style="background:${c.color}">${initials(c.name)}${c.logo?`<img src="${c.logo}" alt="${c.name} logo" loading="lazy" onerror="this.remove()">`:""}</div>`;
 const channelCard=(c,i)=>c.url&&!playable(c)
  ?`<div class="station"><a class="channel-card" href="${c.url}" target="_blank" rel="noopener noreferrer" aria-label="Open ${c.name} official page (opens a new tab)"><span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Open official page ↗</small></span></span></a></div>`
- :`<div class="station"><button class="channel-card" data-p="h${i}" data-channel-feed-card data-channel-index="${i}" aria-label="Watch ${c.name} here"><span class="channel-poster" aria-hidden="true">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:c.logo?`<img class="channel-poster-logo" src="${c.logo}" alt="" loading="lazy" onerror="this.remove()">`:""}</span><span class="channel-preview-slot" data-channel-preview aria-hidden="true"></span>${c.hls||c.channelId?`<span class="channel-preview-status" data-channel-preview-status>Live preview · muted when visible</span>`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>${c.noOfficialLink?"Tap to watch live here":"Tap to watch here"}</small></span></span></button>${!c.noOfficialLink&&((c.youtube&&c.url)||c.alwaysOfficial)?`<div class="station-links"><a href="${c.url}" target="_blank" rel="noopener noreferrer">Open official source ↗</a></div>`:""}</div>`;
+ :`<div class="station"><button class="channel-card" data-p="h${i}" aria-label="Watch ${c.name} here">${c.cover?`<img class="channel-cover" src="${c.cover}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="channel-info">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>${c.noOfficialLink?"Tap to watch live here":"Tap to watch here"}</small></span></span></button>${!c.noOfficialLink&&((c.youtube&&c.url)||c.alwaysOfficial)?`<div class="station-links"><a href="${c.url}" target="_blank" rel="noopener noreferrer">Open official source ↗</a></div>`:""}</div>`;
 const radioCard=(c,i)=>`<button class="radio-card" data-p="r${i}" aria-label="Play ${c.name}">${chLogo(c)}<span><strong>${c.name}</strong><small>${c.note}</small><small>Tap to listen here</small></span>${svg(P.play,22)}</button>`;
 const thumb=c=>`<div class="lg" style="background:${c.youtube?`url(https://i.ytimg.com/vi/${c.youtube}/hqdefault.jpg) center/cover`:grad(c.hue)}">${c.youtube?"":c.title.charAt(0)}</div>`;
 
@@ -561,129 +544,16 @@ function results(){
   return hit.length?`<div class="list">${hit.map(x=>x[5]?`<a class="li" href="${x[5]}" target="_blank" rel="noopener noreferrer">${x[1]}<span class="n">${x[2]}<small>${x[3]}</small></span>${svg(P.chev,22)}</a>`:rowItem(x[0],x[1],x[2],x[3])).join("")}</div>`:`<p class="empty">Nothing matches "${q}". Try another word.</p>`;
 }
 function render(){
-  stopChannelPreview();
-  if(channelObserver){channelObserver.disconnect();channelObserver=null;}
-  channelRatios.clear();
   $("#title").textContent=TITLES[view];
   document.querySelectorAll("nav button").forEach(b=>{const on=b.dataset.v===view;b.classList.toggle("on",on);on?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
   $("#view").innerHTML=q?results():VIEWS[view]();
   $("#view").style.overflowY=view==="shorts"&&!q?"hidden":"auto";
-  if(view==="channels"&&!q)setupChannelPreviews();
   if(view==="shorts"&&!q){const feed=$(".shorts");let timer;const activate=()=>{if(!feed.isConnected||document.hidden)return;const box=feed.getBoundingClientRect();let best=null,amount=0;feed.querySelectorAll(".sh").forEach(section=>{const r=section.getBoundingClientRect(),visible=Math.max(0,Math.min(r.bottom,box.bottom)-Math.max(r.top,box.top));if(visible>amount){amount=visible;best=section}});if(best&&amount>=box.height*0.5)startShort(best.querySelector("[data-short-play]"),true)};feed.addEventListener("scroll",()=>{clearTimeout(timer);timer=setTimeout(activate,150)},{passive:true});requestAnimationFrame(activate);}
   clearInterval(bt);
   if(view==="home"&&!q&&!matchMedia("(prefers-reduced-motion:reduce)").matches){
     bt=setInterval(()=>{const b=$("#bn");if(!b)return;const w=b.firstElementChild.offsetWidth+12;b.scrollTo({left:b.scrollLeft+w>=b.scrollWidth-w/2?0:b.scrollLeft+w,behavior:"smooth"})},5000);
   }
 }
-/* Channel feed previews are isolated from the main player: one muted, in-page
-   preview at a time; all source URLs come only from existing CHANNELS data. */
-let channelObserver=null,channelPreview=null,channelPreviewToken=0;
-const channelRatios=new Map(),failedChannelCards=new WeakSet();
-function stopChannelPreview(){
-  channelPreviewToken++;
-  const state=channelPreview;channelPreview=null;
-  if(!state)return;
-  if(state.timer)clearTimeout(state.timer);
-  if(state.hls){try{state.hls.destroy()}catch(e){}}
-  if(state.video){try{state.video.pause();state.video.removeAttribute("src");state.video.load()}catch(e){}}
-  if(state.yt){try{state.yt.destroy()}catch(e){}}
-  if(state.slot)state.slot.replaceChildren();
-  if(state.card)state.card.classList.remove("channel-preview-playing","channel-preview-loading");
-}
-function failChannelPreview(state){
-  if(!state||channelPreview!==state)return;
-  failedChannelCards.add(state.card);
-  const status=state.card.querySelector("[data-channel-preview-status]");
-  if(status)status.textContent="Preview unavailable · tap to watch";
-  stopChannelPreview();
-}
-function showChannelPreview(state){
-  if(channelPreview!==state||document.hidden||$("#dlg").open)return;
-  if(state.timer)clearTimeout(state.timer);
-  state.card.classList.remove("channel-preview-loading");
-  state.card.classList.add("channel-preview-playing");
-  const status=state.card.querySelector("[data-channel-preview-status]");
-  if(status)status.textContent="LIVE PREVIEW · MUTED";
-}
-function startChannelPreview(card){
-  const c=CHANNELS[Number(card.dataset.channelIndex)];
-  if(!c||(!c.hls&&!c.channelId)||failedChannelCards.has(card)){stopChannelPreview();return;}
-  if(channelPreview&&channelPreview.card===card)return;
-  stopChannelPreview();
-  const state={card,slot:card.querySelector("[data-channel-preview]"),token:channelPreviewToken,hls:null,video:null,yt:null,timer:null};
-  channelPreview=state;
-  card.classList.add("channel-preview-loading");
-  const status=card.querySelector("[data-channel-preview-status]");
-  if(status)status.textContent="Loading muted preview…";
-  const current=()=>channelPreview===state&&state.token===channelPreviewToken&&!document.hidden&&!document.querySelector("dialog[open]")&&card.isConnected;
-  state.timer=setTimeout(()=>{if(current()&&!card.classList.contains("channel-preview-playing"))failChannelPreview(state)},15000);
-  if(c.hls){
-    const video=document.createElement("video");state.video=video;
-    video.className="channel-preview-media";video.muted=true;video.defaultMuted=true;video.setAttribute("muted","");
-    video.playsInline=true;video.autoplay=true;video.preload="none";video.tabIndex=-1;video.setAttribute("aria-hidden","true");
-    video.addEventListener("playing",()=>{if(current())showChannelPreview(state)},{once:true});
-    video.addEventListener("error",()=>{if(current())failChannelPreview(state)});
-    state.slot.replaceChildren(video);
-    const useNative=video.canPlayType("application/vnd.apple.mpegurl");
-    try{
-      if(useNative){video.src=c.hls;}
-      else if(window.Hls&&Hls.isSupported()){
-        state.hls=new Hls({lowLatencyMode:true});
-        state.hls.on(Hls.Events.ERROR,(event,data)=>{if(data&&data.fatal&&current())failChannelPreview(state)});
-        state.hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-          if(!current())return;
-          try{const attempt=video.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{if(current())failChannelPreview(state)})}
-          catch(e){failChannelPreview(state)}
-        });
-        state.hls.attachMedia(video);state.hls.loadSource(c.hls);
-      }else{failChannelPreview(state);return;}
-      if(useNative){video.load();const attempt=video.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{if(current())failChannelPreview(state)});}
-    }catch(e){failChannelPreview(state);}
-    return;
-  }
-  // Only existing YouTube channel IDs are used; iframe autoplay starts muted.
-  const iframe=document.createElement("iframe"),id=encodeURIComponent(c.channelId);
-  iframe.className="channel-preview-media";iframe.title=(c.name||"Station")+" muted live preview";
-  iframe.allow="autoplay; encrypted-media";iframe.referrerPolicy="strict-origin-when-cross-origin";
-  iframe.tabIndex=-1;iframe.setAttribute("aria-hidden","true");
-  const origin=/^https?:$/.test(location.protocol)?"&origin="+encodeURIComponent(location.origin):"";
-  iframe.src="https://www.youtube-nocookie.com/embed/live_stream?channel="+id+"&autoplay=1&mute=1&playsinline=1&controls=0&rel=0&enablejsapi=1"+origin;
-  state.slot.replaceChildren(iframe);
-  youtubeAPI.then(ready=>{
-    if(!current())return;
-    if(!ready||!window.YT||!YT.Player){failChannelPreview(state);return;}
-    try{
-      state.yt=new YT.Player(iframe,{events:{
-        onReady:event=>{if(!current())return;try{event.target.mute();event.target.setVolume(0);event.target.playVideo()}catch(e){failChannelPreview(state)}},
-        onStateChange:event=>{if(current()&&event.data===YT.PlayerState.PLAYING)showChannelPreview(state)},
-        onAutoplayBlocked:()=>{if(current())failChannelPreview(state)},
-        onError:()=>{if(current())failChannelPreview(state)}
-      }});
-    }catch(e){failChannelPreview(state);}
-  }).catch(()=>{if(current())failChannelPreview(state)});
-}
-function syncChannelPreview(){
-  if(document.hidden||document.querySelector("dialog[open]")||view!=="channels"||q){stopChannelPreview();return;}
-  let best=null,bestRatio=0;
-  channelRatios.forEach((ratio,card)=>{if(card.isConnected&&ratio>bestRatio){best=card;bestRatio=ratio}});
-  if(best&&bestRatio>=0.25)startChannelPreview(best);else stopChannelPreview();
-}
-function setupChannelPreviews(){
-  const root=$("#view"),cards=root.querySelectorAll("[data-channel-feed-card]");
-  if(!cards.length||!window.IntersectionObserver)return;
-  channelObserver=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>channelRatios.set(entry.target,entry.isIntersecting?entry.intersectionRatio:0));
-    syncChannelPreview();
-  },{root,rootMargin:"0px",threshold:[0,0.1,0.25,0.4,0.55,0.7,0.85,1]});
-  cards.forEach(card=>channelObserver.observe(card));
-}
-document.addEventListener("visibilitychange",()=>{
-  if(document.hidden)stopChannelPreview();
-  else if(view==="channels"&&!q)requestAnimationFrame(syncChannelPreview);
-});
-window.addEventListener("pagehide",stopChannelPreview);
-window.addEventListener("resize",()=>{if(view==="channels"&&!q)requestAnimationFrame(syncChannelPreview)},{passive:true});
-$("#dlg").addEventListener("close",()=>{if(view==="channels"&&!q)requestAnimationFrame(syncChannelPreview)});
 function stopShort(section){const frame=section.querySelector(".short-frame");frame.replaceChildren();frame.hidden=true;section.querySelector(".big").hidden=false;}
 function startShort(button,automatic=false){
   if(!button)return;
@@ -757,7 +627,7 @@ function preparePlayer(k,c){
   }
   dlg.scrollTop=0;
 }
-function openPlayer(){stopChannelPreview();const dlg=$("#dlg");if(!dlg.open)dlg.showModal()}
+function openPlayer(){const dlg=$("#dlg");if(!dlg.open)dlg.showModal()}
 
 function openNews(index){
   const n=NEWS_UPDATES[index];if(!n)return;
@@ -843,7 +713,7 @@ function play(k){
     $("#au").pause();$("#dock").classList.remove("on");
     const frame=$("#frame"),fallback=$(".video-fallback"),note=$("#playerNote");
     frame.classList.remove("audio-frame","social-frame");fallback.hidden=true;
-    const video=document.createElement("video");video.controls=true;video.playsInline=true;video.autoplay=true;video.muted=true;video.defaultMuted=true;video.preload="metadata";video.src=c.video;video.setAttribute("aria-label",c.title+" video player");frame.replaceChildren(video);
+    const video=document.createElement("video");video.controls=true;video.playsInline=true;video.preload="metadata";video.src=c.video;video.setAttribute("aria-label",c.title+" video player");frame.replaceChildren(video);
     note.className="player-note player-credit";note.replaceChildren(document.createTextNode("Silent footage · "+c.title+" by "+c.creator+" · converted to MP4. "));
     const source=document.createElement("a");source.href=c.source;source.target="_blank";source.rel="noopener noreferrer";source.textContent="Original";note.append(source,document.createTextNode(" · "));
     const license=document.createElement("a");license.href="https://creativecommons.org/licenses/by-sa/4.0/";license.target="_blank";license.rel="noopener noreferrer";license.textContent="CC BY-SA 4.0";note.append(license);
@@ -881,18 +751,17 @@ function play(k){
     openPlayer();iframe.src=src;
     if(!c.embed && !c.social && !c.frame) youtubeAPI.then(ready=>{
       if(!ready || session!==playerSession || !iframe.isConnected)return;
-      let playing=false, mutedRetry=false;
+      let playing=false;
       try{new YT.Player(iframe,{events:{
-        onReady:e=>{if(session===playerSession){if(cw)cw.ready(e.target);e.target.playVideo()}},
+        onReady:e=>{if(session===playerSession){if(cw)cw.ready(e.target);e.target.unMute();e.target.playVideo()}},
         onAutoplayBlocked:e=>{
           if(session!==playerSession)return;
-          if(!mutedRetry){mutedRetry=true;noteEl.textContent="Starting muted. Tap the speaker in the player for sound.";try{e.target.mute();e.target.playVideo()}catch(err){noteEl.textContent="Tap play in the video to start."}}
-          else noteEl.textContent="Tap play in the video to start.";
+          noteEl.textContent="Tap play in the video to start with sound. Check the speaker control if needed.";
         },
         onStateChange:e=>{
           if(session!==playerSession)return;
           if(cw)cw.state(e);
-          if(e.data===YT.PlayerState.PLAYING){playing=true;noteEl.textContent=mutedRetry?"Playing muted. Tap the speaker in the player for sound.":note;}
+          if(e.data===YT.PlayerState.PLAYING){playing=true;noteEl.textContent=note;}
         },
         onError:e=>{if(session===playerSession){if(cw)cw.error(e.data);noteEl.textContent=c.channelId?"The station may be offline or may not allow playback here. Check its live page below.":"This video may be unavailable here. Try the original source below.";fallback.open=true;}}
       }});
