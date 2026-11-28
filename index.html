@@ -133,6 +133,7 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
 #dlg .close{position:static;flex:none;width:42px;height:42px;background:#272732;color:#fff;font-size:21px}
 #dlg .player-brand{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--y)}
 #dlg .frame{background:#000;width:100%;aspect-ratio:16/9}
+#dlg.tv-live .frame{position:sticky;top:0;z-index:4}
 #dlg .frame.audio-frame{height:210px;aspect-ratio:auto}#dlg .frame.social-frame{height:min(640px,70vh);aspect-ratio:auto}
 #dlg .player-detail{position:relative;display:flex;gap:15px;padding:18px 16px;min-height:132px;overflow:hidden;background:#1a1a22}
 #dlg .player-backdrop{position:absolute;inset:0;background-position:center;background-size:cover;opacity:.17;filter:blur(12px);transform:scale(1.1);pointer-events:none}
@@ -209,7 +210,7 @@ button.radio-card{width:100%;text-align:left}.radio-card .lg{position:relative;o
   <div id="dock"><div><strong id="dt"></strong><small id="ds"></small></div><audio id="au" controls></audio></div>
   <nav aria-label="Main"></nav>
 </div>
-<dialog id="dlg" aria-labelledby="playerTitle"><div class="player-shell"><div class="player-top"><button class="close" id="x" aria-label="Close player">←</button><span class="player-brand">WEST PULSE UG</span></div><div class="frame" id="frame"></div><button id="pipButton" type="button" hidden style="margin:10px 16px;padding:9px 14px;border:1px solid #ffcb05;border-radius:8px;background:#1a1a22;color:#ffcb05;font:inherit;cursor:pointer">Picture in picture</button><section class="player-detail"><div class="player-backdrop" id="playerBackdrop" aria-hidden="true"></div><img class="player-cover" id="playerCover" alt="" hidden><div class="player-info"><h2 id="playerTitle"></h2><p id="playerSub"></p></div></section><div class="player-note" id="playerNote"></div><details class="video-fallback"><summary>Having trouble playing?</summary><p>Some streams may be offline or unavailable to play here. <a id="youtubeLink" target="_blank" rel="noopener noreferrer">Open the original source</a></p></details><div class="player-related" id="playerRelated"></div></div></dialog>
+<dialog id="dlg" aria-labelledby="playerTitle"><div class="player-shell"><div class="player-top"><button class="close" id="x" aria-label="Close player">←</button><span class="player-brand">WEST PULSE UG</span></div><div class="frame" id="frame"></div><section class="player-detail"><div class="player-backdrop" id="playerBackdrop" aria-hidden="true"></div><img class="player-cover" id="playerCover" alt="" hidden><div class="player-info"><h2 id="playerTitle"></h2><p id="playerSub"></p></div></section><div class="player-note" id="playerNote"></div><details class="video-fallback"><summary>Having trouble playing?</summary><p>Some streams may be offline or unavailable to play here. <a id="youtubeLink" target="_blank" rel="noopener noreferrer">Open the original source</a></p></details><div class="player-related" id="playerRelated"></div></div></dialog>
 <dialog id="eventDlg" aria-labelledby="eventTitle"><div class="event-shell"><div class="event-top"><button class="event-back" id="eventBack" aria-label="Back to home">←</button><span>WEST PULSE UG</span></div><section class="event-hero" id="eventHero"><h2 id="eventTitle"></h2><p id="eventTag"></p></section><div class="event-body"><h3 id="eventHeading">About</h3><p id="eventDescription"></p><p class="event-note" id="eventNote"></p><a class="event-source" id="eventSource" target="_blank" rel="noopener noreferrer">View source ↗</a></div></div></dialog>
 <dialog id="newsDlg" aria-labelledby="newsTitle" aria-describedby="newsSummary"><div class="news-shell"><div class="news-top"><span>WEST PULSE UG · NEWS</span><button class="news-close" id="newsClose" type="button" aria-label="Close news story">×</button></div><img class="news-detail-cover" id="newsImage" alt=""><p class="news-illustration" id="newsPhotoLabel">Illustrative cover · not a photograph from the report</p><article class="news-detail"><h2 id="newsTitle"></h2><p class="news-date" id="newsDate"></p><p id="newsSummary"></p><p class="news-publisher" id="newsPublisher"></p><p class="news-source-wrap"><a id="newsSource" target="_blank" rel="noopener noreferrer">Read the original report ↗</a></p><p class="news-photo-credit" id="newsPhotoCredit"></p><p class="news-license"><a id="newsPhotoLink" target="_blank" rel="noopener noreferrer">View photo on Wikimedia Commons ↗</a><span aria-hidden="true"> · </span><a id="newsLicenseLink" target="_blank" rel="noopener noreferrer">View photo license ↗</a></p></article></div></dialog>
 <div id="toast" role="status"></div>
@@ -597,6 +598,7 @@ const playable=c=>!!(c.youtube||c.video||c.hls||c.channelId||c.frame||c.social||
 const coverFor=c=>c.cover||c.image||(c.youtube?"https://i.ytimg.com/vi/"+encodeURIComponent(c.youtube)+"/hqdefault.jpg":c.logo||"");
 function preparePlayer(k,c){
   const dlg=$("#dlg"), cover=coverFor(c), image=$("#playerCover"), backdrop=$("#playerBackdrop");
+  dlg.classList.toggle("tv-live",k[0]==="h");
   $("#playerTitle").textContent=c.title||c.name||c.caption||"WEST PULSE UG";
   $("#playerSub").textContent=c.sub||c.note||c.author||c.tag||"";
   image.hidden=!cover;if(cover){image.src=cover}else image.removeAttribute("src");
@@ -626,8 +628,6 @@ function preparePlayer(k,c){
   dlg.scrollTop=0;
 }
 function openPlayer(){const dlg=$("#dlg");if(!dlg.open)dlg.showModal()}
-function clearAutoPiP(){try{if(navigator.mediaSession)navigator.mediaSession.setActionHandler("enterpictureinpicture",null)}catch(e){}}
-function configureLivePiP(video){video.autoPictureInPicture=true;video.setAttribute("autopictureinpicture","");try{if(navigator.mediaSession)navigator.mediaSession.setActionHandler("enterpictureinpicture",async()=>{if(video.isConnected && document.querySelector("#dlg").open && !video.paused && document.pictureInPictureEnabled && video.requestPictureInPicture){try{await video.requestPictureInPicture()}catch(e){}}})}catch(e){}const button=$("#pipButton");const webkit=typeof video.webkitSetPresentationMode==="function" && typeof video.webkitSupportsPresentationMode==="function" && video.webkitSupportsPresentationMode("picture-in-picture");const standard=!!(document.pictureInPictureEnabled && video.requestPictureInPicture);button.hidden=!(webkit||standard);button.onclick=()=>{try{if(webkit){video.webkitSetPresentationMode(video.webkitPresentationMode==="picture-in-picture"?"inline":"picture-in-picture")}else if(standard){const p=document.pictureInPictureElement===video?document.exitPictureInPicture():video.requestPictureInPicture();if(p&&p.catch)p.catch(()=>toast("Start the video first, then try picture in picture."))}}catch(e){toast("Start the video first, then try picture in picture.")}}}
 
 function openNews(index){
   const n=NEWS_UPDATES[index];if(!n)return;
@@ -672,8 +672,7 @@ function play(k){
   const c=SRC[k[0]]&&SRC[k[0]][+k.slice(1)];
   if(!c)return;
   if(k[0]==="b"){openEvent(c);return}
-  cwStop();clearAutoPiP();
-  $("#pipButton").hidden=true;$("#pipButton").onclick=null;
+  cwStop();
   if(playable(c))preparePlayer(k,c);
   // The selected four live stations have no external fallback link, even on error.
   const existingLink=$("#youtubeLink");
@@ -691,7 +690,7 @@ function play(k){
     note.className="player-note";note.textContent="Connecting to live stream…";
     if(!c.noOfficialLink)$("#youtubeLink").href=c.siteUrl||c.url||c.hls;
     const video=document.createElement("video");video.controls=true;video.playsInline=true;video.autoplay=true;video.setAttribute("aria-label",(c.name||"Live TV")+" live stream");
-    frame.replaceChildren(video);configureLivePiP(video);
+    frame.replaceChildren(video);
     const fail=()=>{if(session===playerSession){note.textContent="This stream is offline or blocked right now. Please try again later.";fallback.open=true}};
     video.addEventListener("playing",()=>{if(session===playerSession)note.textContent="Live · "+c.name});
     video.addEventListener("error",fail);
@@ -777,7 +776,7 @@ function play(k){
     $("#dt").textContent=c.title;$("#ds").textContent=c.sub||"";$("#dock").classList.add("on");
   }else toast(k[0]==="h"?"Stream not available yet":"This video is not available yet");
 }
-const closeVideo=()=>{cwStop();clearAutoPiP();playerSession++;killHls();$("#dlg").close();$("#frame").innerHTML="";cwRefresh()};
+const closeVideo=()=>{cwStop();playerSession++;killHls();$("#dlg").close();$("#frame").innerHTML="";cwRefresh()};
 
 /* chrome */
 $("nav").innerHTML=Object.keys(TITLES).map(v=>`<button data-v="${v}">${svg(P[v])}<span>${TITLES[v]}</span></button>`).join("");
@@ -808,7 +807,7 @@ document.addEventListener("click",e=>{
 });
 $("#q").addEventListener("input",e=>{q=e.target.value.trim();render()});
 $("#x").addEventListener("click",closeVideo);
-$("#dlg").addEventListener("cancel",()=>{cwStop();clearAutoPiP();playerSession++;killHls();$("#frame").innerHTML="";cwRefresh()});
+$("#dlg").addEventListener("cancel",()=>{cwStop();playerSession++;killHls();$("#frame").innerHTML="";cwRefresh()});
 render();
 </script>
 </body>
