@@ -359,7 +359,7 @@ const $=s=>document.querySelector(s);
 /* Live TV: "frame" loads the station's page inside the player window.
    If a station gives you a direct embed link, put it in "frame". */
 CHANNELS.push(
- {name:"Disney Jr. Live",logo:"https://yt3.ggpht.com/ycmH6u_8GXdVOSwL8K8D0QSLxzoJvd6yiRORWT0QYosXdtBBOkqQdXTR4DS6kDHd-U49Z3dcpHY=s48-c-k-c0x00ffffff-no-rj",color:"#d42f68",note:"Cartoons · live Sofia the First",frame:"https://www.youtube.com/embed/GpGd8QP3UFQ",url:"https://www.youtube.com/watch?v=GpGd8QP3UFQ",fallbackClosed:true},
+ {name:"Disney Jr. Live",mutedAutoplay:true,logo:"https://yt3.ggpht.com/ycmH6u_8GXdVOSwL8K8D0QSLxzoJvd6yiRORWT0QYosXdtBBOkqQdXTR4DS6kDHd-U49Z3dcpHY=s48-c-k-c0x00ffffff-no-rj",color:"#d42f68",note:"Cartoons · live Sofia the First",frame:"https://www.youtube.com/embed/GpGd8QP3UFQ?autoplay=1&mute=1&playsinline=1",url:"https://www.youtube.com/watch?v=GpGd8QP3UFQ",fallbackClosed:true},
  {name:"KBS TV",logo:"https://www.kbstv.co.ug/assets/images/kbs-logo.png",color:"#b31b1b",note:"Live TV · plays here",hls:"https://www.kbstv.co.ug/live/abr/master.m3u8",url:"https://www.kbstv.co.ug/"},
  {name:"Kingdom TV",logo:"https://kingdommediaug.com/wp-content/uploads/2024/01/LOF.jpg",color:"#8d6225",note:"Live TV · plays here",hls:"https://stream.kingdommediaug.com/ktv/video.m3u8",url:"https://kingdommediaug.com/live-broadcast/"},
  {name:"NTV Uganda",logo:"https://ntv.co.ug/wp-content/uploads/2025/07/ntv_logo_bg.png",color:"#b31b1b",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/abul2026.m3u8",url:"https://ntv.co.ug/live-tv"},
@@ -376,11 +376,11 @@ const RADIO=[
  {name:"Sanyu FM 88.2",color:"#e4a92f",logo:"https://sanyufm.com/wp-content/uploads/2024/07/Sanyu-FM-Logo-1.png",note:"Kampala · 88.2 FM",stream:"https://s44.myradiostream.com:8138/stream",url:"https://sanyufm.com/"},
  {name:"Radio One FM 90",color:"#3368a6",logo:"https://radioonefm90.com/wp-content/uploads/2025/08/Radio-One-log-o.png",note:"Kampala · 90 FM",stream:"https://stream.radioonefm90.com/proxy/radioone?mp=/stream",url:"https://radioonefm90.com/"},
  {name:"Galaxy FM 100.2",color:"#ec961a",logo:"https://www.galaxyfm.co.ug/wp-content/uploads/2018/01/Galaxy-FM-Logo.png",note:"Kampala · 100.2 FM",stream:"https://stream.zeno.fm/ahtmyttw5mftv",url:"https://www.galaxyfm.co.ug/radio/"},
- {name:"Messiah Radio",color:"#982721",logo:"https://messiahradio.co.ug/wp-content/uploads/2023/05/cropped-messiah-logo2-03-192x192.png",note:"Kasese",stream:"",frame:"https://messiahradio.co.ug/live/",url:"https://messiahradio.co.ug/live/"},
- {name:"Kasese Guide Radio",color:"#30618d",logo:"https://cdn.onlineradiobox.com/img/l/0/88100.v3.png",note:"Kasese",stream:"",frame:"https://live.kaseseguideradio.com/",url:"https://live.kaseseguideradio.com/"},
- {name:"Vision Radio 89.1 FM",color:"#714a9c",logo:"https://www.visionradio891.com/assets/img/logo.png",note:"Mbarara",stream:"",frame:"https://www.visionradio891.com/",url:"https://www.visionradio891.com/"},
- {name:"Glory FM 106.7",color:"#a56a16",logo:"https://gloryfm.live/wp-content/uploads/2020/10/gloryfm-radio-106.png",note:"Mbarara",stream:"",frame:"https://gloryfm.live/",url:"https://gloryfm.live/"},
- {name:"Messenger FM",color:"#b04644",logo:"https://messengerfm.com/wp-content/uploads/2022/02/cropped-messengerfm-192x192.jpg",note:"Mbarara",stream:"",frame:"https://messengerfm.com/",url:"https://messengerfm.com/"}
+ {name:"Messiah Radio",color:"#982721",logo:"https://messiahradio.co.ug/wp-content/uploads/2023/05/cropped-messiah-logo2-03-192x192.png",note:"Kasese",stream:"https://cast.julyhost.net/listen/messiah/radio.mp3",url:"https://messiahradio.co.ug/live/"},
+ {name:"Kasese Guide Radio",color:"#30618d",logo:"https://cdn.onlineradiobox.com/img/l/0/88100.v3.png",note:"Kasese",stream:"https://cast.julyhost.net/listen/kgr/radio.mp3",url:"https://live.kaseseguideradio.com/"},
+ {name:"Vision Radio 89.1 FM",color:"#714a9c",logo:"https://www.visionradio891.com/assets/img/logo.png",note:"Mbarara",stream:"https://stream.zeno.fm/rmtdek37zxhvv",url:"https://www.visionradio891.com/"},
+ {name:"Glory FM 106.7",color:"#a56a16",logo:"https://gloryfm.live/wp-content/uploads/2020/10/gloryfm-radio-106.png",note:"Mbarara",stream:"https://stream.zeno.fm/5remmcqkpd0uv",url:"https://gloryfm.live/"},
+ {name:"Messenger FM",color:"#b04644",logo:"https://messengerfm.com/wp-content/uploads/2022/02/cropped-messengerfm-192x192.jpg",note:"Mbarara",stream:"https://stream-281.zeno.fm/2ze4b857v0kvv",url:"https://messengerfm.com/"}
 ];
 const SRC={b:BANNERS,c:CONTENT,h:CHANNELS,s:SHORTS,p:PODCASTS,a:TV_ARCHIVE,r:RADIO};
 const svg=(p,s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
@@ -734,7 +734,7 @@ function play(k){
       src="https://www.youtube.com/embed/live_stream?channel="+encodeURIComponent(c.channelId)+"&autoplay=1&playsinline=1&rel=0"+apiParams;
       original=c.liveUrl;note="Available when the station is broadcasting live.";
     }else if(c.frame){
-      src=c.frame;original=c.url;note=c.fallbackClosed?"Tap play in the video to start.":"Tap play on the station page. If it doesn't load here, use the link below.";
+      src=c.frame;original=c.url;note=c.mutedAutoplay?"Playing muted. Tap the speaker for sound.":c.fallbackClosed?"Tap play in the video to start.":"Tap play on the station page. If it doesn't load here, use the link below.";
     }else{
       src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(c.youtube)+"?autoplay=1&playsinline=1&rel=0"+apiParams;
       original="https://www.youtube.com/watch?v="+encodeURIComponent(c.youtube);note=c.note||"";
