@@ -359,8 +359,9 @@ const $=s=>document.querySelector(s);
 /* Live TV: "frame" loads the station's page inside the player window.
    If a station gives you a direct embed link, put it in "frame". */
 CHANNELS.push(
- {name:"KBS TV",color:"#b31b1b",note:"Live TV · plays here",hls:"https://www.kbstv.co.ug/live/abr/master.m3u8",url:"https://www.kbstv.co.ug/"},
- {name:"Kingdom TV",color:"#8d6225",note:"Live TV · plays here",hls:"https://stream.kingdommediaug.com/ktv/video.m3u8",url:"https://kingdommediaug.com/live-broadcast/"},
+ {name:"Disney Jr. Live",logo:"https://yt3.ggpht.com/ycmH6u_8GXdVOSwL8K8D0QSLxzoJvd6yiRORWT0QYosXdtBBOkqQdXTR4DS6kDHd-U49Z3dcpHY=s48-c-k-c0x00ffffff-no-rj",color:"#d42f68",note:"Cartoons · live Sofia the First",frame:"https://www.youtube.com/embed/GpGd8QP3UFQ",url:"https://www.youtube.com/watch?v=GpGd8QP3UFQ",fallbackClosed:true},
+ {name:"KBS TV",logo:"https://www.kbstv.co.ug/assets/images/kbs-logo.png",color:"#b31b1b",note:"Live TV · plays here",hls:"https://www.kbstv.co.ug/live/abr/master.m3u8",url:"https://www.kbstv.co.ug/"},
+ {name:"Kingdom TV",logo:"https://kingdommediaug.com/wp-content/uploads/2024/01/LOF.jpg",color:"#8d6225",note:"Live TV · plays here",hls:"https://stream.kingdommediaug.com/ktv/video.m3u8",url:"https://kingdommediaug.com/live-broadcast/"},
  {name:"NTV Uganda",logo:"https://ntv.co.ug/wp-content/uploads/2025/07/ntv_logo_bg.png",color:"#b31b1b",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/abul2026.m3u8",url:"https://ntv.co.ug/live-tv"},
  {name:"Spark TV",logo:"https://www.nationmedia.com/wp-content/uploads/2017/06/Spark-Logo.png",color:"#db246d",note:"Live TV · plays here",hls:"https://ams-2629.antmedia.cloud/LiveApp/streams/spark2026.m3u8",url:"https://ntv.co.ug/spark-live-tv-2"},
  {name:"Bukedde 1",color:"#b31b1b",note:"Live TV · plays here",hls:"https://stream.hydeinnovations.com/bukedde1flussonic/index.m3u8",logo:"https://newvision-media.s3.amazonaws.com/cms/477f4adb-98c3-48e7-9269-3f52592f80dc.png",noOfficialLink:true},
@@ -371,6 +372,10 @@ CHANNELS.push(
 /* Radio: put each station's direct audio stream (https, .mp3/.aac/.m3u8-free) in "stream".
    While "stream" is empty, the station's page loads inside the player window ("frame"). */
 const RADIO=[
+ {name:"Radio Simba 97.3 FM",color:"#de221b",logo:"https://www.radiosimba.ug/wp-content/uploads/2021/08/Radio-Simba-LOGO-256x256-1-e1648121337989.jpg",note:"Kampala · 97.3 FM",stream:"https://radiosimba-atunwadigital.streamguys1.com/radiosimba",url:"https://www.radiosimba.ug/stream"},
+ {name:"Sanyu FM 88.2",color:"#e4a92f",logo:"https://sanyufm.com/wp-content/uploads/2024/07/Sanyu-FM-Logo-1.png",note:"Kampala · 88.2 FM",stream:"https://s44.myradiostream.com:8138/stream",url:"https://sanyufm.com/"},
+ {name:"Radio One FM 90",color:"#3368a6",logo:"https://radioonefm90.com/wp-content/uploads/2025/08/Radio-One-log-o.png",note:"Kampala · 90 FM",stream:"https://stream.radioonefm90.com/proxy/radioone?mp=/stream",url:"https://radioonefm90.com/"},
+ {name:"Galaxy FM 100.2",color:"#ec961a",logo:"https://www.galaxyfm.co.ug/wp-content/uploads/2018/01/Galaxy-FM-Logo.png",note:"Kampala · 100.2 FM",stream:"https://stream.zeno.fm/ahtmyttw5mftv",url:"https://www.galaxyfm.co.ug/radio/"},
  {name:"Messiah Radio",color:"#982721",logo:"https://messiahradio.co.ug/wp-content/uploads/2023/05/cropped-messiah-logo2-03-192x192.png",note:"Kasese",stream:"",frame:"https://messiahradio.co.ug/live/",url:"https://messiahradio.co.ug/live/"},
  {name:"Kasese Guide Radio",color:"#30618d",logo:"https://cdn.onlineradiobox.com/img/l/0/88100.v3.png",note:"Kasese",stream:"",frame:"https://live.kaseseguideradio.com/",url:"https://live.kaseseguideradio.com/"},
  {name:"Vision Radio 89.1 FM",color:"#714a9c",logo:"https://www.visionradio891.com/assets/img/logo.png",note:"Mbarara",stream:"",frame:"https://www.visionradio891.com/",url:"https://www.visionradio891.com/"},
