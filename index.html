@@ -626,7 +626,8 @@ function preparePlayer(k,c){
   dlg.scrollTop=0;
 }
 function openPlayer(){const dlg=$("#dlg");if(!dlg.open)dlg.showModal()}
-function configureLivePiP(video){const button=$("#pipButton");const webkit=typeof video.webkitSetPresentationMode==="function" && typeof video.webkitSupportsPresentationMode==="function" && video.webkitSupportsPresentationMode("picture-in-picture");const standard=!!(document.pictureInPictureEnabled && video.requestPictureInPicture);button.hidden=!(webkit||standard);button.onclick=()=>{try{if(webkit){video.webkitSetPresentationMode(video.webkitPresentationMode==="picture-in-picture"?"inline":"picture-in-picture")}else if(standard){const p=document.pictureInPictureElement===video?document.exitPictureInPicture():video.requestPictureInPicture();if(p&&p.catch)p.catch(()=>toast("Start the video first, then try picture in picture."))}}catch(e){toast("Start the video first, then try picture in picture.")}}}
+function clearAutoPiP(){try{if(navigator.mediaSession)navigator.mediaSession.setActionHandler("enterpictureinpicture",null)}catch(e){}}
+function configureLivePiP(video){video.autoPictureInPicture=true;video.setAttribute("autopictureinpicture","");try{if(navigator.mediaSession)navigator.mediaSession.setActionHandler("enterpictureinpicture",async()=>{if(video.isConnected && document.querySelector("#dlg").open && !video.paused && document.pictureInPictureEnabled && video.requestPictureInPicture){try{await video.requestPictureInPicture()}catch(e){}}})}catch(e){}const button=$("#pipButton");const webkit=typeof video.webkitSetPresentationMode==="function" && typeof video.webkitSupportsPresentationMode==="function" && video.webkitSupportsPresentationMode("picture-in-picture");const standard=!!(document.pictureInPictureEnabled && video.requestPictureInPicture);button.hidden=!(webkit||standard);button.onclick=()=>{try{if(webkit){video.webkitSetPresentationMode(video.webkitPresentationMode==="picture-in-picture"?"inline":"picture-in-picture")}else if(standard){const p=document.pictureInPictureElement===video?document.exitPictureInPicture():video.requestPictureInPicture();if(p&&p.catch)p.catch(()=>toast("Start the video first, then try picture in picture."))}}catch(e){toast("Start the video first, then try picture in picture.")}}}
 
 function openNews(index){
   const n=NEWS_UPDATES[index];if(!n)return;
@@ -671,7 +672,7 @@ function play(k){
   const c=SRC[k[0]]&&SRC[k[0]][+k.slice(1)];
   if(!c)return;
   if(k[0]==="b"){openEvent(c);return}
-  cwStop();
+  cwStop();clearAutoPiP();
   $("#pipButton").hidden=true;$("#pipButton").onclick=null;
   if(playable(c))preparePlayer(k,c);
   // The selected four live stations have no external fallback link, even on error.
@@ -776,7 +777,7 @@ function play(k){
     $("#dt").textContent=c.title;$("#ds").textContent=c.sub||"";$("#dock").classList.add("on");
   }else toast(k[0]==="h"?"Stream not available yet":"This video is not available yet");
 }
-const closeVideo=()=>{cwStop();playerSession++;killHls();$("#dlg").close();$("#frame").innerHTML="";cwRefresh()};
+const closeVideo=()=>{cwStop();clearAutoPiP();playerSession++;killHls();$("#dlg").close();$("#frame").innerHTML="";cwRefresh()};
 
 /* chrome */
 $("nav").innerHTML=Object.keys(TITLES).map(v=>`<button data-v="${v}">${svg(P[v])}<span>${TITLES[v]}</span></button>`).join("");
@@ -807,7 +808,7 @@ document.addEventListener("click",e=>{
 });
 $("#q").addEventListener("input",e=>{q=e.target.value.trim();render()});
 $("#x").addEventListener("click",closeVideo);
-$("#dlg").addEventListener("cancel",()=>{cwStop();playerSession++;killHls();$("#frame").innerHTML="";cwRefresh()});
+$("#dlg").addEventListener("cancel",()=>{cwStop();clearAutoPiP();playerSession++;killHls();$("#frame").innerHTML="";cwRefresh()});
 render();
 </script>
 </body>
