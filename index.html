@@ -685,12 +685,14 @@ function play(k){
     const fail=()=>{if(session===playerSession){note.textContent="This stream is offline or blocked right now. Please try again later.";fallback.open=true}};
     video.addEventListener("playing",()=>{if(session===playerSession)note.textContent="Live · "+c.name});
     video.addEventListener("error",fail);
-    if(video.canPlayType("application/vnd.apple.mpegurl")){video.src=c.hls}
+    const useHlsJsFirst=/^Bukedde [12]$/.test(c.name||"");
+    if(!useHlsJsFirst&&video.canPlayType("application/vnd.apple.mpegurl")){video.src=c.hls}
     else if(window.Hls&&Hls.isSupported()){
       hlsInst=new Hls({lowLatencyMode:true});
       hlsInst.on(Hls.Events.ERROR,(ev,d)=>{if(d&&d.fatal)fail()});
       hlsInst.loadSource(c.hls);hlsInst.attachMedia(video);
-    }else{fail()}
+    }else if(video.canPlayType("application/vnd.apple.mpegurl")){video.src=c.hls}
+    else{fail()}
     openPlayer();video.play().catch(()=>{if(session===playerSession)note.textContent="Tap play in the video to start."});return;
   }
   if(c.stream){
